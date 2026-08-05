@@ -13,3 +13,5 @@ All notable changes to this project will be documented in this file.
   ClusterIP Service pinned to the reviewed Project 3 image digest.
 - Issue 004's local and staging overlays with ConfigMap-managed settings and
   an external Secret reference without committed Secret values.
+- Issue 005's token-disabled ServiceAccount, ingress policies, and bounded
+  CPU-based HPA with documented local-cluster limitations.

@@ -82,6 +82,11 @@ overlay uses two replicas and `APP_ENV=staging`. Both overlays preserve the
 base selectors and probes and load `SERVICE_NAME`, `APP_ENV`, and `LOG_LEVEL`
 from a generated ConfigMap.
 
+The base also defines a token-disabled ServiceAccount, default-deny ingress,
+same-namespace access to the service, and an HPA bounded to one through three
+replicas. The HPA needs a metrics-server; the local Docker Desktop cluster may
+not enforce NetworkPolicy, so those controls must be verified explicitly.
+
 Both overlays reference an external Secret named
 `containerised-service-runtime`; the Secret value is deliberately not stored
 in this repository. Create it only in the target namespace from a protected
@@ -116,9 +121,9 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issues 001–003 are complete on `main`, and Issue 004 is adding environment
-overlays on a feature branch. The reviewed Project 3 image is available
-publicly in GHCR and is pinned by immutable digest in the base.
+Issues 001–004 are complete on `main`, and Issue 005 is adding workload
+hardening and scaling on a feature branch. The reviewed Project 3 image is
+available publicly in GHCR and is pinned by immutable digest in the base.
 
 Published image:
 

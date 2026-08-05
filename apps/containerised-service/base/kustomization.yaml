@@ -5,5 +5,8 @@ namespace: containerised-service
 
 resources:
   - namespace.yaml
+  - service-account.yaml
   - deployment.yaml
   - service.yaml
+  - network-policy.yaml
+  - hpa.yaml

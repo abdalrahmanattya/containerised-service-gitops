@@ -23,6 +23,7 @@ spec:
         app.kubernetes.io/part-of: containerised-service-platform
     spec:
       automountServiceAccountToken: false
+      serviceAccountName: containerised-service
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001
