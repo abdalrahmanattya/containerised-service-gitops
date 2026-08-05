@@ -15,3 +15,5 @@ All notable changes to this project will be documented in this file.
   an external Secret reference without committed Secret values.
 - Issue 005's token-disabled ServiceAccount, ingress policies, and bounded
   CPU-based HPA with documented local-cluster limitations.
+- Issue 006's pull-request-only rendering, schema, security, and secret-pattern
+  validation gates with read-only permissions.

@@ -1,0 +1,54 @@
+name: Validate Kubernetes manifests
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Render, schema, security, and secret checks
+    runs-on: ubuntu-24.04
+    env:
+      KUBE_SCHEMA_VERSION: 1.33.0
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Render every environment overlay
+        run: ./scripts/render-manifests.sh rendered
+
+      - name: Validate Kubernetes schemas
+        run: |
+          go install github.com/yannh/kubeconform/cmd/kubeconform@v0.8.0
+          "$(go env GOPATH)/bin/kubeconform" \
+            -strict \
+            -kubernetes-version "${KUBE_SCHEMA_VERSION}" \
+            -summary \
+            rendered
+
+      - name: Scan rendered manifests with KubeLinter
+        uses: stackrox/kube-linter-action@ca0d55b925470deb5b04b556e6c4276ea94d03c3 # v1.0.4
+        with:
+          directory: rendered
+          version: 0.8.3
+          fail-on-invalid-resource: true
+
+      - name: Scan rendered manifests with Trivy
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        with:
+          scan-type: fs
+          scan-ref: rendered
+          scanners: misconfig,secret
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          version: v0.69.3
+
+      - name: Check repository for credential patterns
+        run: ./scripts/check-public-secrets.sh

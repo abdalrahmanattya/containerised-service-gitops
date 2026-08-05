@@ -121,8 +121,8 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issues 001–004 are complete on `main`, and Issue 005 is adding workload
-hardening and scaling on a feature branch. The reviewed Project 3 image is
+Issues 001–005 are complete on `main`, and Issue 006 is adding pull-request
+manifest validation on a feature branch. The reviewed Project 3 image is
 available publicly in GHCR and is pinned by immutable digest in the base.
 
 Published image:

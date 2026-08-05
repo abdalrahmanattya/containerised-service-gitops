@@ -6,8 +6,8 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 005 in progress; workload hardening and scaling are being defined
-- **Branch:** `feature/005-workload-hardening-scaling`
+- **State:** Issue 006 in progress; pull-request validation is being defined
+- **Branch:** `feature/006-github-manifest-validation`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; no cluster currently configured
 - **Available tools:** Git, Docker Desktop 29.6.2, and kubectl 1.36.1 with
@@ -34,9 +34,11 @@ it factual and replace stale status rather than accumulating a transcript.
 - Completed Issue 004 with local and staging overlays, ConfigMap-managed
   settings, and an external Secret reference; it was merged without being
   applied to a cluster.
-- Started Issue 005 with a token-disabled ServiceAccount, ingress policies,
-  and a bounded CPU-based HPA; these changes are uncommitted and have not
-  been applied to a cluster.
+- Completed Issue 005 with a token-disabled ServiceAccount, ingress policies,
+  and a bounded CPU-based HPA; it was merged without being applied to a
+  cluster.
+- Started Issue 006 with rendered-output, schema, security, and public-secret
+  validation; these changes are uncommitted and do not deploy to a cluster.
 
 ## Decisions
 
@@ -48,11 +50,12 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Finish Issue 005:
+Finish Issue 006:
 
-1. Render and test both overlays independently.
-2. Check ServiceAccount token settings, NetworkPolicy selectors, HPA target,
-   replica bounds, and local-cluster limitations.
+1. Run the local validation script and inspect the workflow's read-only
+   permissions and pinned tool references.
+2. Check that both overlays are rendered and all validation gates fail clearly
+   on malformed or unsafe desired state.
 3. Review the diff, commit it, and open a pull request. Do not apply the
    manifests to a cluster.
 
