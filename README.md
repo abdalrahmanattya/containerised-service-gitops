@@ -1,0 +1,95 @@
+# Containerised Service Kubernetes and GitOps
+
+This repository is Project 5 of the AI-assisted cloud engineering learning
+roadmap. It will hold the versioned Kubernetes desired state for the service
+built in Project 3 and demonstrate how a reviewed Git change becomes a local
+deployment through GitHub, Kustomize, and Argo CD.
+
+## What this project will do
+
+The project will deploy the Project 3 HTTP service to Docker Desktop's local
+Kubernetes cluster. It will define:
+
+- a Kubernetes Deployment and Service;
+- liveness and readiness probes for `GET /health`;
+- runtime configuration through a ConfigMap and references to externally
+  supplied Secrets;
+- resource requests and limits, a restricted security context, NetworkPolicy,
+  and horizontal scaling;
+- Kustomize bases and environment overlays;
+- pull-request checks that render and validate the desired state; and
+- an Argo CD application with documented synchronization and rollback.
+
+The deployed service exposes `GET /health`, `GET /version`, and
+`GET /config-summary`. Its source and container build remain in the separate
+[`containerised-service-cicd`](https://github.com/abdalrahmanattya/containerised-service-cicd)
+application repository.
+
+## Why this is useful
+
+Kubernetes configuration is operational code. A wrong port, image tag, probe,
+permission, or resource value can prevent a healthy application from serving
+traffic. This project makes those changes reviewable and teaches how to use
+rendered manifests, pod status, events, and logs to diagnose deployment
+failures before editing files.
+
+The intended delivery path is:
+
+```text
+Project 3 release -> GHCR image
+                         |
+GitHub pull request -> validated Kustomize desired state
+                         |
+                     merge to main
+                         |
+                 Argo CD reconciliation
+                         |
+              local Kubernetes deployment
+```
+
+## Safety boundaries
+
+- The initial target is a local Docker Desktop Kubernetes cluster only.
+- No cloud cluster, paid service, or production environment is required.
+- No token, password, kubeconfig, private key, or Secret value belongs in Git.
+- Secret manifests may contain references or documented placeholders only.
+- Cluster-changing commands require explicit approval of the command and local
+  target before execution.
+- GitHub publication and image publication use reviewed workflows and scoped
+  repository permissions.
+
+## Planned user workflow
+
+Once implemented, a contributor will:
+
+1. change an environment overlay on a feature branch;
+2. open a GitHub pull request;
+3. review the rendered and validated manifests;
+4. merge the approved desired-state change;
+5. observe Argo CD synchronize the local cluster; and
+6. verify health, version, configuration, events, and rollout status.
+
+Exact behaviour is defined in [`docs/requirements.md`](docs/requirements.md),
+and component boundaries are described in
+[`docs/architecture.md`](docs/architecture.md).
+
+## Repository map
+
+| Path | Purpose |
+| --- | --- |
+| `AGENTS.md` | Safe collaboration instructions for Codex |
+| `docs/requirements.md` | Deployment, validation, GitOps, and safety contracts |
+| `docs/architecture.md` | Repository boundaries, components, and delivery flow |
+| `docs/development.md` | Planned and verified local commands |
+| `docs/issues/` | Ordered, bounded implementation issues |
+| `docs/decisions/` | Durable decisions and trade-offs |
+| `docs/project-journal.md` | Current state and exact resume point |
+| `docs/learning-roadmap.md` | Project 5 phase and completion gate |
+| `CHANGELOG.md` | Notable user-visible changes |
+
+## Current status and next step
+
+Project 5 is being planned on
+`feature/001-project-scaffold-architecture`. After Issue 001 is reviewed and
+merged through GitHub, Issue 002 will establish a versioned Project 3 image in
+GitHub Container Registry before Kubernetes manifests reference it.
