@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: containerised-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: containerised-service
+          envFrom:
+            - configMapRef:
+                name: containerised-service-config
+          env:
+            - name: APP_RUNTIME_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: containerised-service-runtime
+                  key: APP_RUNTIME_SECRET
+                  optional: false

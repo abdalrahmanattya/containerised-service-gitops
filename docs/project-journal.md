@@ -6,8 +6,8 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 003 in progress; Kubernetes base is being defined locally
-- **Branch:** `feature/003-kubernetes-application-base`
+- **State:** Issue 004 in progress; environment overlays are being defined
+- **Branch:** `feature/004-configuration-and-overlays`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; no cluster currently configured
 - **Available tools:** Git, Docker Desktop 29.6.2, and kubectl 1.36.1 with
@@ -28,9 +28,12 @@ it factual and replace stale status rather than accumulating a transcript.
   branch, and removed the duplicate bootstrap feature branch.
 - Verified the Project 3 image publication contract and recorded the public
   immutable image digest for the Kubernetes base.
-- Started a Kustomize application base with a Namespace, Deployment, and
-  ClusterIP Service; it remains uncommitted and has not been applied to a
+- Completed Issue 003 with a merged Kustomize application base containing a
+  Namespace, Deployment, and ClusterIP Service; it has not been applied to a
   cluster.
+- Started Issue 004 with local and staging overlays, ConfigMap-managed
+  settings, and an external Secret reference; these changes are uncommitted
+  and have not been applied to a cluster.
 
 ## Decisions
 
@@ -42,12 +45,11 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Finish Issue 003:
+Finish Issue 004:
 
-1. Render the Kustomize base and review its Namespace, Deployment, and
-   ClusterIP Service.
-2. Check that selectors, health probes, resource values, restricted security
-   settings, and the immutable image digest match the issue acceptance criteria.
+1. Render and test both overlays independently.
+2. Check that configuration, replica differences, selectors, probes, and the
+   external Secret reference match the issue acceptance criteria.
 3. Review the diff, commit it, and open a pull request. Do not apply the
    manifests to a cluster.
 

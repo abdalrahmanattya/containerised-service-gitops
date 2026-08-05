@@ -1,8 +1,8 @@
 # Containerised Service Kubernetes and GitOps
 
 This repository is Project 5 of the AI-assisted cloud engineering learning
-roadmap. It will hold the versioned Kubernetes desired state for the service
-built in Project 3 and demonstrate how a reviewed Git change becomes a local
+roadmap. It holds the versioned Kubernetes desired state for the service built
+in Project 3 and demonstrates how a reviewed Git change becomes a local
 deployment through GitHub, Kustomize, and Argo CD.
 
 ## What this project will do
@@ -69,6 +69,33 @@ Once implemented, a contributor will:
 5. observe Argo CD synchronize the local cluster; and
 6. verify health, version, configuration, events, and rollout status.
 
+To inspect an environment without changing a cluster, render its Kustomize
+overlay from the repository root:
+
+```sh
+kubectl kustomize apps/containerised-service/overlays/local
+kubectl kustomize apps/containerised-service/overlays/staging
+```
+
+The `local` overlay uses one replica and `APP_ENV=development`. The `staging`
+overlay uses two replicas and `APP_ENV=staging`. Both overlays preserve the
+base selectors and probes and load `SERVICE_NAME`, `APP_ENV`, and `LOG_LEVEL`
+from a generated ConfigMap.
+
+Both overlays reference an external Secret named
+`containerised-service-runtime`; the Secret value is deliberately not stored
+in this repository. Create it only in the target namespace from a protected
+local file when deployment is approved:
+
+```sh
+kubectl -n containerised-service create secret generic containerised-service-runtime \
+  --from-file=APP_RUNTIME_SECRET=/secure/local/path/app-runtime-secret
+```
+
+If that Secret is absent, Kubernetes reports `CreateContainerConfigError` and
+the pod does not start. Diagnose with `kubectl describe pod` and its Events;
+do not place the Secret value in Git or paste it into logs.
+
 Exact behaviour is defined in [`docs/requirements.md`](docs/requirements.md),
 and component boundaries are described in
 [`docs/architecture.md`](docs/architecture.md).
@@ -89,9 +116,9 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issues 001 and 002 are complete on `main`, and Issue 003 is defining the
-Kubernetes application base on a feature branch. The reviewed Project 3 image
-is available publicly in GHCR and is pinned by immutable digest in that base.
+Issues 001–003 are complete on `main`, and Issue 004 is adding environment
+overlays on a feature branch. The reviewed Project 3 image is available
+publicly in GHCR and is pinned by immutable digest in the base.
 
 Published image:
 
