@@ -11,3 +11,5 @@ All notable changes to this project will be documented in this file.
 - Issue 002's reviewed public Project 3 image reference and immutable digest.
 - Issue 003's Kustomize application base with a Namespace, Deployment, and
   ClusterIP Service pinned to the reviewed Project 3 image digest.
+- Issue 004's local and staging overlays with ConfigMap-managed settings and
+  an external Secret reference without committed Secret values.

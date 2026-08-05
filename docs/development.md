@@ -75,6 +75,36 @@ The tag for human release identification is `0.1.2`. Verify the package page
 and digest before changing the image reference. Do not add an image-pull Secret
 for this public package.
 
+## Issue 004 overlay validation
+
+Render and test both environments without contacting a cluster:
+
+```sh
+./scripts/test-overlays.sh
+kubectl kustomize apps/containerised-service/overlays/local
+kubectl kustomize apps/containerised-service/overlays/staging
+```
+
+Expected result: the script prints `Overlay renders passed: local, staging`.
+Each output contains one ConfigMap, one Deployment, one Service, and the base
+health probes. Local has one replica and `APP_ENV: development`; staging has
+two replicas and `APP_ENV: staging`.
+
+The overlays reference the externally managed Secret
+`containerised-service-runtime`, key `APP_RUNTIME_SECRET`, with
+`optional: false`. No Secret object or value is committed. Before an approved
+deployment, create the Secret from a protected local file:
+
+```sh
+kubectl -n containerised-service create secret generic containerised-service-runtime \
+  --from-file=APP_RUNTIME_SECRET=/secure/local/path/app-runtime-secret
+```
+
+This command is a documented cluster-changing procedure and must not be run
+until the active context, namespace, and exact mutation are explicitly
+approved. If the Secret is missing, inspect pod Events and expect
+`CreateContainerConfigError`.
+
 ## Cluster safety procedure
 
 Before any mutation:
