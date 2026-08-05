@@ -6,8 +6,8 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 001 complete; feature branch ready for GitHub review
-- **Branch:** `feature/001-project-scaffold-architecture`
+- **State:** Issue 001 complete; ready to plan Issue 002
+- **Branch:** `main`, synchronized with `origin/main`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; no cluster currently configured
 - **Available tools:** Git, Docker Desktop 29.6.2, and kubectl 1.36.1 with
@@ -23,6 +23,8 @@ it factual and replace stale status rather than accumulating a transcript.
   issues.
 - Selected Kustomize, GHCR, Docker Desktop Kubernetes, and Argo CD for the
   proposed workflow, subject to issue-level verification and approval.
+- Bootstrapped the previously empty GitHub repository, set `main` as its default
+  branch, and removed the duplicate bootstrap feature branch.
 
 ## Decisions
 
@@ -34,16 +36,15 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Review and merge Issue 001:
+Begin Issue 002:
 
-1. Open a GitHub pull request from
-   `feature/001-project-scaffold-architecture` to `main`.
-2. Review the repository boundary, safety rules, decisions, and issue order.
-3. Merge only after the GitHub diff matches the reviewed local commit.
-4. After merge, synchronize local `main` and begin Issue 002 by planning the
-   cross-repository GHCR release
+1. Re-orient in both this repository and the Project 3 application repository.
+2. Decide whether image publication retains application version `0.1.0` or
+   requires a new patch release.
+3. Agree on workflow permissions, tag trigger, image name, and verification.
+4. Create a meaningful Project 3 feature branch for the reviewed release
    workflow; do not publish an image until the destination and permissions are
-   reviewed.
+   approved.
 
 ## Open questions
 
@@ -58,5 +59,5 @@ Review and merge Issue 001:
 - [x] Planning is separated from implementation.
 - [x] Repository boundaries and GitHub use are explicit.
 - [x] Issue 001 diff is reviewed and committed.
-- [ ] Issue 001 pull request is merged.
+- [x] Initial GitHub `main` bootstrap is complete.
 - [ ] Project 5 completion gate is met.

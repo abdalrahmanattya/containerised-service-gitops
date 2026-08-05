@@ -89,7 +89,6 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Project 5 is being planned on
-`feature/001-project-scaffold-architecture`. After Issue 001 is reviewed and
-merged through GitHub, Issue 002 will establish a versioned Project 3 image in
-GitHub Container Registry before Kubernetes manifests reference it.
+Issue 001 is complete on `main`, and GitHub is configured as the remote review
+boundary. Issue 002 will establish a versioned Project 3 image in GitHub
+Container Registry before Kubernetes manifests reference it.
