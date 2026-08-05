@@ -89,6 +89,18 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issue 001 is complete on `main`, and GitHub is configured as the remote review
-boundary. Issue 002 will establish a versioned Project 3 image in GitHub
-Container Registry before Kubernetes manifests reference it.
+Issues 001 and 002 are complete on `main`, and GitHub is configured as the
+remote review boundary. The reviewed Project 3 image is available publicly in
+GHCR and Issue 003 will add the Kubernetes application base that references it.
+
+Published image:
+
+```text
+ghcr.io/abdalrahmanattya/containerised-service-cicd:0.1.2
+```
+
+Immutable digest:
+
+```text
+sha256:86e1acfa46fb1edaa8d131b9c8063624eb356b6704835675e64e939b9ff6738b
+```
