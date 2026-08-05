@@ -131,7 +131,7 @@ The selected tools and policy are:
 | --- | --- | --- |
 | Render | kubectl 1.36.1 / Kustomize 5.8.1 | Render `local` and `staging` independently |
 | Schema | Kubeconform 0.8.0 | Strict Kubernetes `1.33.0` schemas; any invalid object fails |
-| Security/configuration | KubeLinter 0.8.3 | Default checks; findings fail the workflow |
+| Security/configuration | KubeLinter v0.8.3 | Default checks; findings fail the workflow |
 | Misconfiguration/secrets | Trivy engine 0.69.3 | HIGH and CRITICAL findings fail the workflow |
 | Public-repository patterns | `scripts/check-public-secrets.sh` | Private-key and credential-assignment patterns fail |
 

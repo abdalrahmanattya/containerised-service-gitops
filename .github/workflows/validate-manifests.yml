@@ -37,8 +37,7 @@ jobs:
         uses: stackrox/kube-linter-action@ca0d55b925470deb5b04b556e6c4276ea94d03c3 # v1.0.4
         with:
           directory: rendered
-          version: 0.8.3
-          fail-on-invalid-resource: true
+          version: v0.8.3
 
       - name: Scan rendered manifests with Trivy
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
