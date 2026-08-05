@@ -6,14 +6,15 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 001 complete; ready to plan Issue 002
+- **State:** Issue 002 complete; ready to plan Issue 003
 - **Branch:** `main`, synchronized with `origin/main`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; no cluster currently configured
 - **Available tools:** Git, Docker Desktop 29.6.2, and kubectl 1.36.1 with
   Kustomize 5.8.1
-- **Safety:** No credentials, Secret values, cluster mutation, image
-  publication, or deployment has occurred
+- **Safety:** No credentials, Secret values, cluster mutation, or deployment
+  has occurred; the reviewed public image was published by Project 3's
+  GitHub Actions workflow
 
 ## Completed
 
@@ -25,6 +26,8 @@ it factual and replace stale status rather than accumulating a transcript.
   proposed workflow, subject to issue-level verification and approval.
 - Bootstrapped the previously empty GitHub repository, set `main` as its default
   branch, and removed the duplicate bootstrap feature branch.
+- Verified the Project 3 image publication contract and recorded the public
+  immutable image digest for the Kubernetes base.
 
 ## Decisions
 
@@ -36,20 +39,17 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Begin Issue 002:
+Begin Issue 003:
 
-1. Re-orient in both this repository and the Project 3 application repository.
-2. Decide whether image publication retains application version `0.1.0` or
-   requires a new patch release.
-3. Agree on workflow permissions, tag trigger, image name, and verification.
-4. Create a meaningful Project 3 feature branch for the reviewed release
-   workflow; do not publish an image until the destination and permissions are
-   approved.
+1. Create a feature branch for the Kubernetes application base.
+2. Reference the reviewed image by digest:
+   `ghcr.io/abdalrahmanattya/containerised-service-cicd@sha256:86e1acfa46fb1edaa8d131b9c8063624eb356b6704835675e64e939b9ff6738b`.
+3. Define the Namespace, Deployment, Service, probes, resources, and
+   restricted security settings without mutating a cluster.
 
 ## Open questions
 
-- Confirm whether the public GHCR package should use tag `0.1.0` or a new
-  Project 3 patch release after the release workflow is added.
+- Confirm the Project 3 package remains public before Argo CD deployment.
 - Select and pin the manifest schema and security validation tools in Issue 006.
 
 ## Session hand-off checklist
@@ -60,4 +60,5 @@ Begin Issue 002:
 - [x] Repository boundaries and GitHub use are explicit.
 - [x] Issue 001 diff is reviewed and committed.
 - [x] Initial GitHub `main` bootstrap is complete.
+- [x] Project 3 image `0.1.2` and immutable digest are recorded.
 - [ ] Project 5 completion gate is met.

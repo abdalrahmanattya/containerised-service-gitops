@@ -38,6 +38,19 @@ kubectl kustomize apps/containerised-service/overlays/staging
 Schema and security commands are intentionally deferred until their versions,
 inputs, and failure policies are reviewed in Issue 006.
 
+## Reviewed application image
+
+Issue 002 published the public Project 3 image. Kubernetes desired state should
+use the immutable digest rather than a moving tag:
+
+```text
+ghcr.io/abdalrahmanattya/containerised-service-cicd@sha256:86e1acfa46fb1edaa8d131b9c8063624eb356b6704835675e64e939b9ff6738b
+```
+
+The tag for human release identification is `0.1.2`. Verify the package page
+and digest before changing the image reference. Do not add an image-pull Secret
+for this public package.
+
 ## Cluster safety procedure
 
 Before any mutation:
