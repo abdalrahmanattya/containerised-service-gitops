@@ -119,6 +119,38 @@ three replicas. It depends on metrics-server and the Deployment's CPU request
 of 100m; without metrics-server it will render but cannot make scaling
 decisions. HPA status and Events must be checked during the deployment issue.
 
+## Issue 006 validation gates
+
+The pull-request workflow is validation-only. It uses `pull_request` and
+`push` to `main`, grants `contents: read`, and does not authenticate to a
+cluster or run deployment commands. Actions are pinned to full commit SHAs.
+
+The selected tools and policy are:
+
+| Gate | Tool/version | Policy |
+| --- | --- | --- |
+| Render | kubectl 1.36.1 / Kustomize 5.8.1 | Render `local` and `staging` independently |
+| Schema | Kubeconform 0.8.0 | Strict Kubernetes `1.33.0` schemas; any invalid object fails |
+| Security/configuration | KubeLinter 0.8.3 | Default checks; findings fail the workflow |
+| Misconfiguration/secrets | Trivy engine 0.69.3 | HIGH and CRITICAL findings fail the workflow |
+| Public-repository patterns | `scripts/check-public-secrets.sh` | Private-key and credential-assignment patterns fail |
+
+Run the equivalent local command after installing the pinned tools:
+
+```sh
+./scripts/validate-manifests.sh
+```
+
+The script renders both overlays into a temporary directory, validates the
+rendered files, scans them, checks the repository for credential patterns, and
+removes the temporary files. `KUBE_SCHEMA_VERSION` can be set explicitly when
+the intended cluster schema changes.
+
+An exception requires a pull request explaining the exact finding, why it is a
+false positive or accepted risk, the narrowest rule/file scope, and a review
+date. Do not add a blanket ignore; update the tool configuration only with
+that written rationale.
+
 ## Cluster safety procedure
 
 Before any mutation:

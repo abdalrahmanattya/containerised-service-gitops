@@ -3,6 +3,8 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+"${repo_root}/scripts/check-public-secrets.sh"
+
 for environment in local staging; do
   # Render each overlay independently so one environment cannot hide a broken sibling.
   rendered="$(kubectl kustomize "${repo_root}/apps/containerised-service/overlays/${environment}")"
