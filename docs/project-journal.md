@@ -6,8 +6,8 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 002 complete; ready to plan Issue 003
-- **Branch:** `main`, synchronized with `origin/main`
+- **State:** Issue 003 in progress; Kubernetes base is being defined locally
+- **Branch:** `feature/003-kubernetes-application-base`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; no cluster currently configured
 - **Available tools:** Git, Docker Desktop 29.6.2, and kubectl 1.36.1 with
@@ -28,6 +28,9 @@ it factual and replace stale status rather than accumulating a transcript.
   branch, and removed the duplicate bootstrap feature branch.
 - Verified the Project 3 image publication contract and recorded the public
   immutable image digest for the Kubernetes base.
+- Started a Kustomize application base with a Namespace, Deployment, and
+  ClusterIP Service; it remains uncommitted and has not been applied to a
+  cluster.
 
 ## Decisions
 
@@ -39,13 +42,14 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Begin Issue 003:
+Finish Issue 003:
 
-1. Create a feature branch for the Kubernetes application base.
-2. Reference the reviewed image by digest:
-   `ghcr.io/abdalrahmanattya/containerised-service-cicd@sha256:86e1acfa46fb1edaa8d131b9c8063624eb356b6704835675e64e939b9ff6738b`.
-3. Define the Namespace, Deployment, Service, probes, resources, and
-   restricted security settings without mutating a cluster.
+1. Render the Kustomize base and review its Namespace, Deployment, and
+   ClusterIP Service.
+2. Check that selectors, health probes, resource values, restricted security
+   settings, and the immutable image digest match the issue acceptance criteria.
+3. Review the diff, commit it, and open a pull request. Do not apply the
+   manifests to a cluster.
 
 ## Open questions
 

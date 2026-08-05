@@ -89,9 +89,9 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issues 001 and 002 are complete on `main`, and GitHub is configured as the
-remote review boundary. The reviewed Project 3 image is available publicly in
-GHCR and Issue 003 will add the Kubernetes application base that references it.
+Issues 001 and 002 are complete on `main`, and Issue 003 is defining the
+Kubernetes application base on a feature branch. The reviewed Project 3 image
+is available publicly in GHCR and is pinned by immutable digest in that base.
 
 Published image:
 

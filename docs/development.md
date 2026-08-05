@@ -11,7 +11,7 @@ git status --short --branch
 ```
 
 Expected result: the context script reports all checks as `ok`, the diff has no
-whitespace errors, and Git shows only the intentional Issue 001 files.
+whitespace errors, and Git shows only the intentional feature files.
 
 ## Planned toolchain
 
@@ -37,6 +37,30 @@ kubectl kustomize apps/containerised-service/overlays/staging
 
 Schema and security commands are intentionally deferred until their versions,
 inputs, and failure policies are reviewed in Issue 006.
+
+## Issue 003 base validation
+
+Render the reusable workload without contacting a cluster:
+
+```sh
+kubectl kustomize apps/containerised-service/base
+```
+
+Expected result: one Namespace, one Deployment, and one ClusterIP Service. The
+Deployment and Service use `app.kubernetes.io/name: containerised-service` as
+their shared selector label; both health probes call `/health` through the
+named `http` port (`8000`).
+
+The base requests 100m CPU and 128Mi memory to reserve a small, predictable
+amount for this HTTP service, and limits it to 500m CPU and 256Mi memory to
+prevent a single replica from consuming the local cluster. These values are a
+learning-environment starting point and will be reviewed with real evidence in
+the deployment issue.
+
+The pod runs as numeric user and group `10001`, disables Kubernetes API-token
+mounting and privilege escalation, drops Linux capabilities, uses the runtime
+default seccomp profile, and makes its root filesystem read-only. The image is
+pinned by its reviewed immutable digest.
 
 ## Reviewed application image
 

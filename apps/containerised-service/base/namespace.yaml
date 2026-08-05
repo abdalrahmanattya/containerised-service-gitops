@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: containerised-service
+  labels:
+    app.kubernetes.io/name: containerised-service
+    app.kubernetes.io/part-of: containerised-service-platform
