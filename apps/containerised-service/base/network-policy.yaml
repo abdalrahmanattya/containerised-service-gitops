@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: containerised-service-default-deny-ingress
+  labels:
+    app.kubernetes.io/name: containerised-service
+    app.kubernetes.io/part-of: containerised-service-platform
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: containerised-service-allow-same-namespace
+  labels:
+    app.kubernetes.io/name: containerised-service
+    app.kubernetes.io/part-of: containerised-service-platform
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: containerised-service
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: containerised-service
+      ports:
+        - port: http

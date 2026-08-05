@@ -87,8 +87,8 @@ kubectl kustomize apps/containerised-service/overlays/staging
 
 Expected result: the script prints `Overlay renders passed: local, staging`.
 Each output contains one ConfigMap, one Deployment, one Service, and the base
-health probes. Local has one replica and `APP_ENV: development`; staging has
-two replicas and `APP_ENV: staging`.
+health probes, ServiceAccount, NetworkPolicies, and HPA. Local has one replica
+and `APP_ENV: development`; staging has two replicas and `APP_ENV: staging`.
 
 The overlays reference the externally managed Secret
 `containerised-service-runtime`, key `APP_RUNTIME_SECRET`, with
@@ -104,6 +104,20 @@ This command is a documented cluster-changing procedure and must not be run
 until the active context, namespace, and exact mutation are explicitly
 approved. If the Secret is missing, inspect pod Events and expect
 `CreateContainerConfigError`.
+
+## Issue 005 limitations
+
+The default-deny policy applies to ingress. The allow policy permits traffic
+to the service from pods in the `containerised-service` namespace on the named
+`http` port. A local Docker Desktop cluster may not have a network plugin that
+enforces NetworkPolicy, so rendered policy is evidence of intent, not proof of
+packet isolation. Verify the active cluster's networking implementation before
+reporting enforcement.
+
+The HPA targets 70% average CPU utilization and is bounded to one through
+three replicas. It depends on metrics-server and the Deployment's CPU request
+of 100m; without metrics-server it will render but cannot make scaling
+decisions. HPA status and Events must be checked during the deployment issue.
 
 ## Cluster safety procedure
 

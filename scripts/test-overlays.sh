@@ -11,6 +11,10 @@ for environment in local staging; do
   grep -q 'name: containerised-service-runtime' <<<"${rendered}"
   grep -q 'path: /health' <<<"${rendered}"
   grep -q 'containerised-service-cicd@sha256:86e1acfa46fb1edaa8d131b9c8063624eb356b6704835675e64e939b9ff6738b' <<<"${rendered}"
+  grep -q 'kind: ServiceAccount' <<<"${rendered}"
+  grep -q 'automountServiceAccountToken: false' <<<"${rendered}"
+  grep -q 'kind: HorizontalPodAutoscaler' <<<"${rendered}"
+  grep -q 'kind: NetworkPolicy' <<<"${rendered}"
 done
 
 local_render="$(kubectl kustomize "${repo_root}/apps/containerised-service/overlays/local")"
