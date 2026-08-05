@@ -17,3 +17,5 @@ All notable changes to this project will be documented in this file.
   CPU-based HPA with documented local-cluster limitations.
 - Issue 006's pull-request-only rendering, schema, security, and secret-pattern
   validation gates with read-only permissions.
+- Issue 006's Deployment anti-affinity rule for spreading multiple replicas
+  when the cluster has more than one node.
