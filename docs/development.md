@@ -119,6 +119,12 @@ three replicas. It depends on metrics-server and the Deployment's CPU request
 of 100m; without metrics-server it will render but cannot make scaling
 decisions. HPA status and Events must be checked during the deployment issue.
 
+The Deployment uses preferred inter-pod anti-affinity on
+`kubernetes.io/hostname` for the `containerised-service` label. This asks a
+multi-node cluster to spread replicas across nodes. It is deliberately
+preferred rather than required so the two-replica staging overlay can still
+run on the single node provided by Docker Desktop.
+
 ## Issue 006 validation gates
 
 The pull-request workflow is validation-only. It uses `pull_request` and
