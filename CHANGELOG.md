@@ -21,3 +21,5 @@ All notable changes to this project will be documented in this file.
   when the cluster has more than one node.
 - Issue 007's local Docker Desktop and Argo CD reconciliation preparation,
   including the explicit cluster-mutation safety procedure.
+- Issue 007's evidence-led diagnosis of the arm64 local image-pull failure and
+  the separate metrics-server limitation.

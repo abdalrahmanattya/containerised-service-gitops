@@ -6,17 +6,18 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 007 in progress; local deployment and Argo CD reconciliation
-  are being prepared
-- **Branch:** `feature/007-local-deployment-argocd`
+- **State:** Issue 007 in progress; Argo CD is synced but the workload is
+  degraded because the image lacks an arm64 manifest
+- **Branch:** `feature/007-diagnose-arm64-image`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
 - **Available tools:** Git, Docker Desktop 29.6.2, and kubectl 1.36.1 with
   Kustomize 5.8.1
-- **Safety:** No credentials, Secret values, cluster mutation, or deployment
-  has occurred; Argo CD is not installed yet. The reviewed public image was
-  published by Project 3's GitHub Actions workflow
+- **Safety:** The local `docker-desktop` cluster only has approved local
+  resources. The runtime Secret value remains outside Git. Argo CD and the
+  application resources were installed on the local cluster; no cloud cluster
+  or credential was introduced.
 
 ## Completed
 
@@ -43,7 +44,14 @@ it factual and replace stale status rather than accumulating a transcript.
   validation, including the reviewed KubeLinter input and replica anti-affinity
   fixes.
 - Started Issue 007 after confirming the `docker-desktop` context and a Ready
-  local control-plane node. No cluster-changing command has been run.
+  local control-plane node.
+- Installed Argo CD `v3.5.0`, created the externally managed runtime Secret,
+  and applied the reviewed Application to the local cluster.
+- Confirmed Argo CD reports the Application `Synced` but `Degraded`. Pod
+  Events report `ImagePullBackOff`; the GHCR digest is valid but publishes only
+  `linux/amd64`, while the local Kubernetes node is `arm64`.
+- Confirmed the HPA cannot read CPU metrics because metrics-server is absent;
+  this is a separate documented Docker Desktop limitation.
 
 ## Decisions
 
@@ -57,15 +65,11 @@ it factual and replace stale status rather than accumulating a transcript.
 
 Continue Issue 007:
 
-1. Review the rendered `local` overlay and add the Argo CD Application desired
-   state for the public Project 5 repository.
-2. Select and verify a pinned Argo CD installation version.
-3. Before mutation, confirm `docker-desktop`, the `containerised-service`
-   namespace, and the exact Secret creation, Argo CD installation, and sync
-   commands.
-4. Create the runtime Secret from a protected local file, install Argo CD, and
-   synchronize only after explicit approval of those exact local mutations.
-5. Verify rollout, endpoints, image digest, configuration, events, and logs.
+1. Publish a reviewed Project 3 release for both `linux/amd64` and
+   `linux/arm64`, after explicit approval of the cross-repository publication.
+2. Record the new immutable digest in Project 5 through a pull request.
+3. Let Argo CD reconcile the digest change and verify rollout, endpoints, image
+   architecture, configuration, events, and logs.
 
 ## Open questions
 
