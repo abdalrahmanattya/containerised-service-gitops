@@ -207,3 +207,21 @@ explicit approval before execution. After installation, apply
 `argocd/applications/containerised-service-local.yaml` to create the reviewed
 Application object, then inspect its status before allowing reconciliation to
 deploy the local overlay.
+
+### Issue 007 diagnostic evidence
+
+The first reconciliation created the expected namespace, ServiceAccount,
+ConfigMap, Service, Deployment, HPA, NetworkPolicies, and pod. The pod stayed
+in `ImagePullBackOff`. Read-only inspection showed:
+
+```text
+GHCR digest: valid OCI image index with a linux/amd64 manifest only
+Kubernetes node: arm64
+Pull error: short read: expected 856 bytes but got 0: unexpected EOF
+```
+
+The corrective action is to publish a new Project 3 image for both
+`linux/amd64` and `linux/arm64`, then update the Project 5 digest through Git.
+The HPA also reports unavailable CPU metrics because metrics-server is not
+installed in this Docker Desktop cluster; that does not cause the image pull
+failure.

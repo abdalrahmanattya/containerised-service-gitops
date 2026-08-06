@@ -121,11 +121,12 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issues 001–006 are complete on `main`. Issue 007 is in progress on the
-`feature/007-local-deployment-argocd` branch. The next step is to prepare the
-local Docker Desktop deployment and Argo CD reconciliation; no cluster
-resources have been changed yet. The reviewed Project 3 image is available
-publicly in GHCR and is pinned by immutable digest in the base.
+Issues 001–006 are complete on `main`. Issue 007 is in progress. Argo CD is
+installed locally and the Application is synced, but the pod is currently
+degraded because the reviewed Project 3 image is `linux/amd64` only while the
+Docker Desktop Kubernetes node is `arm64`. The next step is to publish a
+multi-architecture Project 3 release and update this repository to its new
+immutable digest.
 
 Published image:
 
