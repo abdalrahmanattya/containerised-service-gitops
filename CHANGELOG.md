@@ -19,3 +19,5 @@ All notable changes to this project will be documented in this file.
   validation gates with read-only permissions.
 - Issue 006's Deployment anti-affinity rule for spreading multiple replicas
   when the cluster has more than one node.
+- Issue 007's local Docker Desktop and Argo CD reconciliation preparation,
+  including the explicit cluster-mutation safety procedure.

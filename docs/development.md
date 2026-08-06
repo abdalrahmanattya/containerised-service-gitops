@@ -21,6 +21,7 @@ whitespace errors, and Git shows only the intentional feature files.
 - GitHub Actions for pull-request validation
 - Docker Desktop Kubernetes as the only initial deployment target
 - Argo CD for local reconciliation after explicit installation approval
+- Argo CD `v3.5.0` for the initial local installation
 
 Exact installation versions and commands will be selected and verified in the
 issue that introduces each tool. Do not copy an unverified `latest` install
@@ -168,3 +169,41 @@ Before any mutation:
 5. request explicit approval for the exact mutation and namespace.
 
 Never print or commit raw Secret objects, tokens, or kubeconfig contents.
+
+## Issue 007 local deployment preparation
+
+The active local target must be confirmed before any mutation:
+
+```sh
+kubectl config current-context
+kubectl get nodes
+```
+
+Expected output is context `docker-desktop` and a Ready
+`desktop-control-plane` node. These checks are read-only. Render and inspect
+the exact local desired state before applying it:
+
+```sh
+kubectl kustomize apps/containerised-service/overlays/local
+```
+
+The deployment requires the externally managed Secret
+`containerised-service-runtime` in namespace `containerised-service`. Its
+value must come from a protected local file and must not be printed, committed,
+or pasted into chat. Argo CD will read this public repository without a Git
+credential and reconcile `apps/containerised-service/overlays/local` into the
+local cluster. The selected Argo CD release is `v3.5.0`. The official release
+instructions use server-side apply because the CRDs are large:
+
+```sh
+kubectl create namespace argocd
+kubectl apply -n argocd --server-side --force-conflicts \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.5.0/manifests/install.yaml
+```
+
+These commands install the standard non-HA Argo CD components into the local
+`docker-desktop` cluster. They are cluster-changing commands and require
+explicit approval before execution. After installation, apply
+`argocd/applications/containerised-service-local.yaml` to create the reviewed
+Application object, then inspect its status before allowing reconciliation to
+deploy the local overlay.

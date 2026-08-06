@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: containerised-service-local
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: containerised-service
+    app.kubernetes.io/part-of: containerised-service-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/abdalrahmanattya/containerised-service-gitops.git
+    targetRevision: main
+    path: apps/containerised-service/overlays/local
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: containerised-service
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

@@ -6,15 +6,17 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 006 in progress; pull-request validation is being defined
-- **Branch:** `feature/006-github-manifest-validation`
+- **State:** Issue 007 in progress; local deployment and Argo CD reconciliation
+  are being prepared
+- **Branch:** `feature/007-local-deployment-argocd`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
-- **Target:** Docker Desktop local Kubernetes; no cluster currently configured
+- **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
+  active and its control-plane node is Ready
 - **Available tools:** Git, Docker Desktop 29.6.2, and kubectl 1.36.1 with
   Kustomize 5.8.1
 - **Safety:** No credentials, Secret values, cluster mutation, or deployment
-  has occurred; the reviewed public image was published by Project 3's
-  GitHub Actions workflow
+  has occurred; Argo CD is not installed yet. The reviewed public image was
+  published by Project 3's GitHub Actions workflow
 
 ## Completed
 
@@ -37,8 +39,11 @@ it factual and replace stale status rather than accumulating a transcript.
 - Completed Issue 005 with a token-disabled ServiceAccount, ingress policies,
   and a bounded CPU-based HPA; it was merged without being applied to a
   cluster.
-- Started Issue 006 with rendered-output, schema, security, and public-secret
-  validation; these changes are uncommitted and do not deploy to a cluster.
+- Completed Issue 006 with rendered-output, schema, security, and public-secret
+  validation, including the reviewed KubeLinter input and replica anti-affinity
+  fixes.
+- Started Issue 007 after confirming the `docker-desktop` context and a Ready
+  local control-plane node. No cluster-changing command has been run.
 
 ## Decisions
 
@@ -50,14 +55,17 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Finish Issue 006:
+Continue Issue 007:
 
-1. Run the local validation script and inspect the workflow's read-only
-   permissions and pinned tool references.
-2. Check that both overlays are rendered and all validation gates fail clearly
-   on malformed or unsafe desired state.
-3. Review the diff, commit it, and open a pull request. Do not apply the
-   manifests to a cluster.
+1. Review the rendered `local` overlay and add the Argo CD Application desired
+   state for the public Project 5 repository.
+2. Select and verify a pinned Argo CD installation version.
+3. Before mutation, confirm `docker-desktop`, the `containerised-service`
+   namespace, and the exact Secret creation, Argo CD installation, and sync
+   commands.
+4. Create the runtime Secret from a protected local file, install Argo CD, and
+   synchronize only after explicit approval of those exact local mutations.
+5. Verify rollout, endpoints, image digest, configuration, events, and logs.
 
 ## Open questions
 

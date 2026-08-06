@@ -121,9 +121,11 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issues 001–005 are complete on `main`, and Issue 006 is adding pull-request
-manifest validation on a feature branch. The reviewed Project 3 image is
-available publicly in GHCR and is pinned by immutable digest in the base.
+Issues 001–006 are complete on `main`. Issue 007 is in progress on the
+`feature/007-local-deployment-argocd` branch. The next step is to prepare the
+local Docker Desktop deployment and Argo CD reconciliation; no cluster
+resources have been changed yet. The reviewed Project 3 image is available
+publicly in GHCR and is pinned by immutable digest in the base.
 
 Published image:
 
