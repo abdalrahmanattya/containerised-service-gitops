@@ -324,3 +324,30 @@ The repair must be a later focused Git commit restoring the reviewed digest:
 ```text
 sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2
 ```
+
+### Focused repair result
+
+Pull request 14 restored the known-good digest and merged as revision
+`6ed8ef2`. Argo CD reconciled without an imperative rollout command. Observed
+results were:
+
+```text
+Argo CD:   Synced, Healthy
+Deployment: 1/1 Ready, 1 Available, NewReplicaSetAvailable
+Pod:       1/1 Running
+HPA:       CPU 5%/70%, one replica
+/health:   {"status":"healthy"}
+/version:  {"version":"0.1.3"}
+```
+
+`/config-summary` also returned the reviewed service name, `development`
+environment, and `INFO` log level. Kubernetes reused the retained healthy
+ReplicaSet, so recovery did not require a fresh image pull. The service was
+verified through a temporary localhost port-forward, which was stopped after
+the checks.
+
+The remaining rollback test will use Git history rather than `kubectl rollout
+undo`: revert the repair merge to reintroduce the known failure, observe Argo
+CD reconciliation, then revert that revert to restore the known-good desired
+state. Each revert must be reviewed and merged separately so its effect is
+observable.
