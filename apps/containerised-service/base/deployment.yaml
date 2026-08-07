@@ -41,7 +41,7 @@ spec:
                     app.kubernetes.io/name: containerised-service
       containers:
         - name: containerised-service
-          image: ghcr.io/abdalrahmanattya/containerised-service-cicd@sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2
+          image: ghcr.io/abdalrahmanattya/containerised-service-cicd@sha256:0000000000000000000000000000000000000000000000000000000000000000
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

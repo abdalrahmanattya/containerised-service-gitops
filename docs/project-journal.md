@@ -6,9 +6,9 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 008 focused repair recovered the service; recovery evidence
-  is being documented before the Git-revert test
-- **Branch:** `feature/008-document-repair-recovery`
+- **State:** Issue 008 Git-revert test prepared to reintroduce the known image
+  failure; it has not been merged or reconciled yet
+- **Branch:** `feature/008-reintroduce-failure-by-revert`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
@@ -90,6 +90,9 @@ it factual and replace stale status rather than accumulating a transcript.
 - Verified `/health`, `/version`, and `/config-summary` returned the expected
   healthy, `0.1.3`, and development responses after recovery. The temporary
   localhost port-forward was stopped after verification.
+- Prepared a Git revert of pull request 14's merge commit. The revert restores
+  the intentionally invalid digest while retaining later diagnosis and
+  recovery evidence; a journal conflict was resolved for that purpose.
 
 ## Decisions
 
@@ -103,10 +106,9 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Merge the repair-recovery evidence. Then test rollback in two reviewed steps:
-revert pull request 14's merge commit to reintroduce the known image failure,
-observe reconciliation, and revert that revert to restore the known-good Git
-state through Argo CD.
+Review and merge the first rollback-test revert, then observe the known image
+failure through Argo CD. After that observation, revert this new revert commit
+in a second pull request to restore the known-good Git state.
 
 ## Open questions
 
