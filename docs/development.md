@@ -272,3 +272,55 @@ kubectl -n argocd get application containerised-service-local
 The Metrics API returned node and pod usage, the HPA reported
 `ScalingActive=True` with CPU below its 70% target, and Argo CD reported the
 Application `Synced` and `Healthy`.
+
+## Issue 008 controlled image-pull failure
+
+Pull request 12 deliberately replaced the known-good image digest with a
+syntactically valid but nonexistent all-zero digest. After merge revision
+`bb359db`, Argo CD reconciled that desired state to the approved local
+`docker-desktop` cluster. The following read-only commands captured evidence
+before any repair:
+
+```sh
+kubectl -n argocd get application containerised-service-local
+kubectl -n containerised-service get deployment containerised-service
+kubectl -n containerised-service rollout status deployment/containerised-service --timeout=1s
+kubectl -n containerised-service get pods \
+  -l app.kubernetes.io/name=containerised-service -o wide
+kubectl -n containerised-service describe pod <failed-pod-name>
+kubectl -n containerised-service logs <failed-pod-name>
+kubectl kustomize apps/containerised-service/overlays/local
+kubectl -n containerised-service get hpa containerised-service
+```
+
+Observed evidence:
+
+- Argo CD was `Synced` and `Degraded`, proving the cluster matched the failing
+  Git revision rather than suffering from reconciliation drift.
+- The new pod was `ImagePullBackOff`; its Events reported `NotFound` for the
+  exact all-zero digest.
+- The live Deployment and locally rendered overlay contained the same invalid
+  digest, directly connecting desired state to the pull failure.
+- The Deployment reported `ProgressDeadlineExceeded` but remained Available.
+  Its rolling-update settings retained the previous Ready pod, preserving one
+  serving replica while the replacement failed.
+- Logs were unavailable because the image never pulled and the container never
+  started. This is expected evidence, not a separate logging failure.
+- The HPA remained active at 6% of its 70% CPU target, so scaling was not the
+  rollout blocker.
+
+Cause ranking before repair:
+
+1. **Demonstrated:** the desired image digest does not exist in GHCR. The
+   rendered value, live value, and registry `NotFound` Event agree.
+2. **Unlikely:** registry credentials or general registry access. The existing
+   pod previously pulled the public repository at the known-good digest.
+3. **Ruled out as the immediate cause:** scheduling, probes, Secret
+   configuration, and HPA. The pod scheduled successfully but its container
+   never started, so startup configuration and probes were never reached.
+
+The repair must be a later focused Git commit restoring the reviewed digest:
+
+```text
+sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2
+```

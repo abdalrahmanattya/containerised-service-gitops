@@ -6,9 +6,9 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 008 controlled image-pull failure prepared for review; no
-  failing desired state has been merged or reconciled yet
-- **Branch:** `feature/008-controlled-image-pull-failure`
+- **State:** Issue 008 controlled image-pull failure reproduced and diagnosed;
+  evidence is being recorded before repair
+- **Branch:** `feature/008-document-image-failure`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
@@ -69,6 +69,17 @@ it factual and replace stale status rather than accumulating a transcript.
 - Selected a syntactically valid but nonexistent image digest as the bounded
   Issue 008 failure. The feature branch changes only the Deployment image;
   the known-good digest remains recorded in Git history and documentation.
+- Merged pull request 12 at revision `bb359db`; Argo CD reconciled the invalid
+  digest and reported `Synced` and `Degraded`.
+- Observed the replacement pod in `ImagePullBackOff`. Events report that GHCR
+  cannot find the all-zero digest, while the rendered overlay and live
+  Deployment both contain that digest. The Deployment exceeded its progress
+  deadline but remained Available because the previous healthy pod stayed
+  Ready. Container logs were unavailable because the image never pulled and
+  the replacement container never started.
+- Ranked the invalid digest as the demonstrated cause. Registry credentials,
+  scheduling, probes, Secret configuration, and HPA were ruled out or shown
+  not to be reached; the HPA remained healthy at 6% of its 70% CPU target.
 
 ## Decisions
 
@@ -82,12 +93,9 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Review the controlled failure pull request. Merging it authorizes Argo CD to
-reconcile the nonexistent image digest to the `docker-desktop` local cluster.
-After reconciliation, diagnose the failure from Application status, rollout
-state, pod status, events, logs when available, and rendered desired state
-before editing the image reference. Then repair through Git and test the
-documented Git-revert rollback path.
+Commit and merge the failure-diagnosis evidence before editing the Deployment.
+Then restore the known-good image digest in a focused repair pull request,
+observe Argo CD recovery, and test the documented Git-revert rollback path.
 
 ## Open questions
 
