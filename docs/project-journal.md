@@ -6,9 +6,9 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 007 in progress; Argo CD is synced but the workload is
-  degraded because the image lacks an arm64 manifest
-- **Branch:** `feature/007-diagnose-arm64-image`
+- **State:** Issue 007 in progress; updating desired state to the reviewed
+  multi-architecture Project 3 `v0.1.3` image digest
+- **Branch:** `feature/007-update-multiarch-image`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
@@ -52,6 +52,9 @@ it factual and replace stale status rather than accumulating a transcript.
   `linux/amd64`, while the local Kubernetes node is `arm64`.
 - Confirmed the HPA cannot read CPU metrics because metrics-server is absent;
   this is a separate documented Docker Desktop limitation.
+- Published Project 3 `v0.1.3` with linux/amd64 and linux/arm64 manifests under
+  top-level digest
+  `sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2`.
 
 ## Decisions
 
@@ -65,11 +68,10 @@ it factual and replace stale status rather than accumulating a transcript.
 
 Continue Issue 007:
 
-1. Publish a reviewed Project 3 release for both `linux/amd64` and
-   `linux/arm64`, after explicit approval of the cross-repository publication.
-2. Record the new immutable digest in Project 5 through a pull request.
-3. Let Argo CD reconcile the digest change and verify rollout, endpoints, image
-   architecture, configuration, events, and logs.
+1. Validate and merge the Project 5 immutable digest update through a pull
+   request.
+2. Let Argo CD reconcile the digest change.
+3. Verify rollout, endpoints, deployed digest, configuration, events, and logs.
 
 ## Open questions
 
@@ -84,5 +86,5 @@ Continue Issue 007:
 - [x] Repository boundaries and GitHub use are explicit.
 - [x] Issue 001 diff is reviewed and committed.
 - [x] Initial GitHub `main` bootstrap is complete.
-- [x] Project 3 image `0.1.2` and immutable digest are recorded.
+- [x] Project 3 image `0.1.3` and multi-architecture digest are recorded.
 - [ ] Project 5 completion gate is met.

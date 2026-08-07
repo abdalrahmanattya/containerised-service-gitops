@@ -12,7 +12,7 @@ for environment in local staging; do
   grep -q 'name: containerised-service-config' <<<"${rendered}"
   grep -q 'name: containerised-service-runtime' <<<"${rendered}"
   grep -q 'path: /health' <<<"${rendered}"
-  grep -q 'containerised-service-cicd@sha256:86e1acfa46fb1edaa8d131b9c8063624eb356b6704835675e64e939b9ff6738b' <<<"${rendered}"
+  grep -q 'containerised-service-cicd@sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2' <<<"${rendered}"
   grep -q 'kind: ServiceAccount' <<<"${rendered}"
   grep -q 'automountServiceAccountToken: false' <<<"${rendered}"
   grep -q 'kind: HorizontalPodAutoscaler' <<<"${rendered}"
