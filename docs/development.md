@@ -69,10 +69,10 @@ Issue 002 published the public Project 3 image. Kubernetes desired state should
 use the immutable digest rather than a moving tag:
 
 ```text
-ghcr.io/abdalrahmanattya/containerised-service-cicd@sha256:86e1acfa46fb1edaa8d131b9c8063624eb356b6704835675e64e939b9ff6738b
+ghcr.io/abdalrahmanattya/containerised-service-cicd@sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2
 ```
 
-The tag for human release identification is `0.1.2`. Verify the package page
+The tag for human release identification is `0.1.3`. Verify the package page
 and digest before changing the image reference. Do not add an image-pull Secret
 for this public package.
 
@@ -220,8 +220,9 @@ Kubernetes node: arm64
 Pull error: short read: expected 856 bytes but got 0: unexpected EOF
 ```
 
-The corrective action is to publish a new Project 3 image for both
-`linux/amd64` and `linux/arm64`, then update the Project 5 digest through Git.
-The HPA also reports unavailable CPU metrics because metrics-server is not
-installed in this Docker Desktop cluster; that does not cause the image pull
-failure.
+Project 3 release `v0.1.3` corrected the architecture mismatch by publishing
+both `linux/amd64` and `linux/arm64` manifests under top-level digest
+`sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2`.
+Project 5 updates that digest through Git so Argo CD can reconcile it. The HPA
+also reports unavailable CPU metrics because metrics-server is not installed
+in this Docker Desktop cluster; that does not cause the image pull failure.

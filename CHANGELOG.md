@@ -23,3 +23,5 @@ All notable changes to this project will be documented in this file.
   including the explicit cluster-mutation safety procedure.
 - Issue 007's evidence-led diagnosis of the arm64 local image-pull failure and
   the separate metrics-server limitation.
+- Issue 007's desired-state update to the reviewed Project 3 `v0.1.3`
+  multi-architecture image digest.

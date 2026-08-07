@@ -121,21 +121,20 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issues 001–006 are complete on `main`. Issue 007 is in progress. Argo CD is
-installed locally and the Application is synced, but the pod is currently
-degraded because the reviewed Project 3 image is `linux/amd64` only while the
-Docker Desktop Kubernetes node is `arm64`. The next step is to publish a
-multi-architecture Project 3 release and update this repository to its new
-immutable digest.
+Issues 001–006 are complete on `main`. Issue 007 is in progress. Project 3
+release `v0.1.3` is published for both `linux/amd64` and `linux/arm64`, and this
+repository now pins its reviewed top-level immutable digest. After this change
+is merged, Argo CD will reconcile the local workload and its rollout and
+endpoints must be verified.
 
 Published image:
 
 ```text
-ghcr.io/abdalrahmanattya/containerised-service-cicd:0.1.2
+ghcr.io/abdalrahmanattya/containerised-service-cicd:0.1.3
 ```
 
 Immutable digest:
 
 ```text
-sha256:86e1acfa46fb1edaa8d131b9c8063624eb356b6704835675e64e939b9ff6738b
+sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2
 ```
