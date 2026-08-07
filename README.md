@@ -265,8 +265,8 @@ log-availability, and rendered manifest evidence before repair. A two-step
 Git-revert test reproduced and then recovered that failure through Argo CD.
 The final state is `Synced` and `Healthy`; the Deployment is Available, its pod
 is Ready, the HPA has CPU metrics, and all endpoints return the expected
-`v0.1.3` responses. Release `v0.1.0` is prepared; creating and pushing its Git
-tag requires explicit approval.
+`v0.1.3` responses. Project 5 release `v0.1.0` is published as an annotated Git
+tag on validated commit `cdf7303`.
 
 Published image:
 
