@@ -25,3 +25,25 @@ first complete Project 5 release.
 - README includes setup, use, diagnosis, rollback, and cleanup steps.
 - All completion-gate checks pass and observed results are recorded.
 - Release and tag creation occur only after explicit approval.
+
+## Completion evidence
+
+- Pull request 12 introduced a reviewed nonexistent image digest. Argo CD
+  reconciled it, and status, rollout, pod, Event, log-availability, and
+  rendered-manifest evidence identified the cause before repair.
+- Pull requests 13 and 14 recorded the diagnosis and restored only the
+  reviewed known-good digest. Argo CD returned to `Synced` and `Healthy`.
+- Pull request 16 used a Git revert to reproduce the failure. Pull request 17
+  reverted that revert, restoring the known-good state through Argo CD without
+  an imperative Kubernetes rollback.
+- The final Deployment is Available, its pod is Ready, the HPA receives CPU
+  metrics, and `/health`, `/version`, and `/config-summary` return the expected
+  responses.
+- Pull request 18 completed setup, use, diagnosis, rollback, and cleanup
+  documentation. Its pinned render, schema, security, and secret validation
+  workflow passed at merge commit `0cc01fc`.
+- Repository secret-pattern checks passed, and no Secret value, token,
+  kubeconfig, or credential was committed.
+
+All acceptance criteria are met. Release `v0.1.0` is prepared, but its tag must
+not be created or pushed until explicit approval is given.

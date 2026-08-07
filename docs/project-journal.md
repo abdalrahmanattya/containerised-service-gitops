@@ -6,9 +6,9 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issues 001–008 implemented and the Git-revert recovery verified;
-  final documentation and release gates are in progress
-- **Branch:** `feature/008-complete-documentation`
+- **State:** Issues 001–008 and the Project 5 completion gate are complete;
+  `v0.1.0` release metadata is prepared but no tag exists yet
+- **Branch:** `feature/008-prepare-v0.1.0-release`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
@@ -106,6 +106,14 @@ it factual and replace stale status rather than accumulating a transcript.
   The complete local validation script cannot run because Kubeconform,
   KubeLinter, and Trivy are not installed; the pull-request workflow installs
   pinned versions and remains the required full gate.
+- Merged the complete operations documentation through pull request 18 at
+  `0cc01fc`. GitHub's pinned render, schema, security, and secret check
+  completed successfully for that merge.
+- Rechecked the local cluster: Argo CD remained `Synced` and `Healthy`, the
+  Deployment was 1/1 Available, the pod was Ready with zero restarts, and the
+  HPA reported a valid CPU metric.
+- Reviewed every Project 5 completion-gate criterion and recorded its evidence
+  in Issue 008. Prepared the `v0.1.0` changelog entry without creating a tag.
 
 ## Decisions
 
@@ -119,10 +127,9 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Review the completion documentation and confirm the pull-request validation
-workflow passes, then merge it. Re-run the completion-gate review from `main`
-and request explicit approval before creating and pushing the Project 5
-`v0.1.0` tag.
+Review and merge the `v0.1.0` release metadata after its pull-request checks
+pass. Pull `main`, verify the release commit, and request explicit approval
+before creating or pushing the `v0.1.0` tag.
 
 ## Open questions
 
@@ -137,4 +144,4 @@ and request explicit approval before creating and pushing the Project 5
 - [x] Issue 001 diff is reviewed and committed.
 - [x] Initial GitHub `main` bootstrap is complete.
 - [x] Project 3 image `0.1.3` and multi-architecture digest are recorded.
-- [ ] Project 5 completion gate is met.
+- [x] Project 5 completion gate is met.

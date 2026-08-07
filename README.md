@@ -259,14 +259,14 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issues 001–008 are implemented. A controlled nonexistent-image failure was
-diagnosed from Argo CD, rollout, pod, Event, log-availability, and rendered
-manifest evidence before repair. A two-step Git-revert test reproduced and
-then recovered that failure through Argo CD. The final state is `Synced` and
-`Healthy`; the Deployment is Available, its pod is Ready, the HPA has CPU
-metrics, and all endpoints return the expected `v0.1.3` responses. The next
-step is final pull-request validation followed by an explicitly approved
-Project 5 `v0.1.0` tag.
+Issues 001–008 and the Project 5 completion gate are complete. A controlled
+nonexistent-image failure was diagnosed from Argo CD, rollout, pod, Event,
+log-availability, and rendered manifest evidence before repair. A two-step
+Git-revert test reproduced and then recovered that failure through Argo CD.
+The final state is `Synced` and `Healthy`; the Deployment is Available, its pod
+is Ready, the HPA has CPU metrics, and all endpoints return the expected
+`v0.1.3` responses. Release `v0.1.0` is prepared; creating and pushing its Git
+tag requires explicit approval.
 
 Published image:
 
