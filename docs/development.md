@@ -351,3 +351,28 @@ undo`: revert the repair merge to reintroduce the known failure, observe Argo
 CD reconciliation, then revert that revert to restore the known-good desired
 state. Each revert must be reviewed and merged separately so its effect is
 observable.
+
+### Tested Git-revert rollback result
+
+Pull request 16 merged commit `0500536`, which reverted the repair merge. Argo
+CD detected revision `bcd224b`, reconciled the all-zero digest, and created a
+replacement pod. The pod reproduced `ErrImagePull` and `ImagePullBackOff`; its
+Events again reported GHCR `NotFound`. The prior Ready pod preserved service
+availability.
+
+Pull request 17 then merged commit `79a66bb`, a revert of that revert. Argo CD
+detected recovery revision `d5cc2b7` and returned to `Synced` and `Healthy`.
+Final observed results were:
+
+```text
+Deployment: 1/1 Ready, 1 Available, NewReplicaSetAvailable
+Pod:        1/1 Running, zero restarts
+HPA:        CPU 13%/70%, one replica
+Image:      sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2
+/health:    {"status":"healthy"}
+/version:   {"version":"0.1.3"}
+```
+
+`/config-summary` returned the reviewed development configuration. No
+`kubectl rollout undo`, direct Deployment edit, or forced Argo CD sync was
+used. The temporary localhost port-forward was stopped after verification.

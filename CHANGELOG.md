@@ -27,3 +27,7 @@ All notable changes to this project will be documented in this file.
   multi-architecture image digest.
 - Issue 007's successful local rollout, endpoint verification, metrics-server
   setup, active HPA metrics, and Healthy Argo CD reconciliation evidence.
+- Issue 008's controlled image-pull failure, evidence-led diagnosis, focused
+  repair, and tested two-step Git-revert recovery through Argo CD.
+- Complete setup, validation, service verification, diagnosis, rollback, and
+  local-cluster cleanup instructions for the first Project 5 release.

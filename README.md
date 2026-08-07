@@ -58,16 +58,154 @@ GitHub pull request -> validated Kustomize desired state
 - GitHub publication and image publication use reviewed workflows and scoped
   repository permissions.
 
-## Planned user workflow
+## Contributor workflow
 
-Once implemented, a contributor will:
+A contributor:
 
-1. change an environment overlay on a feature branch;
-2. open a GitHub pull request;
-3. review the rendered and validated manifests;
-4. merge the approved desired-state change;
-5. observe Argo CD synchronize the local cluster; and
-6. verify health, version, configuration, events, and rollout status.
+1. changes an environment overlay on a feature branch;
+2. opens a GitHub pull request;
+3. reviews the rendered and validated manifests;
+4. merges the approved desired-state change;
+5. observes Argo CD synchronize the local cluster; and
+6. verifies health, version, configuration, events, and rollout status.
+
+## Validate without changing a cluster
+
+From the repository root, run the lightweight repository checks:
+
+```sh
+./scripts/test-context-resume.sh
+./scripts/test-overlays.sh
+./scripts/check-public-secrets.sh
+git diff --check
+```
+
+With kubectl, Kubeconform `0.8.0`, KubeLinter `0.8.3`, and Trivy `0.69.3`
+installed, run the same complete validation shape used by CI:
+
+```sh
+./scripts/validate-manifests.sh
+```
+
+Expected result: both overlays render and the schema, security, configuration,
+and public-secret checks pass.
+
+## Set up the local deployment
+
+The tested target is Docker Desktop Kubernetes. Every command in this section
+changes that local cluster and should be run only after confirming the target:
+
+```sh
+kubectl config current-context
+kubectl get nodes
+```
+
+Expected result: context `docker-desktop` and a Ready local node. Install Argo
+CD `v3.5.0`, create the application namespace, and create your own runtime
+Secret from a protected local file:
+
+```sh
+kubectl create namespace argocd
+kubectl apply -n argocd --server-side --force-conflicts \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.5.0/manifests/install.yaml
+kubectl create namespace containerised-service
+kubectl -n containerised-service create secret generic containerised-service-runtime \
+  --from-file=APP_RUNTIME_SECRET=/secure/local/path/app-runtime-secret
+kubectl apply -f argocd/applications/containerised-service-local.yaml
+```
+
+The protected file contains a value chosen by the local operator; nobody needs
+to send you a shared Secret. Do not place that file or its value in this
+repository. Metrics-server is also required for HPA metrics. The pinned,
+checksum-verified Docker Desktop procedure and its local-only TLS exception are
+documented in [`docs/development.md`](docs/development.md#local-metrics-server).
+
+Argo CD watches `main` and reconciles the local overlay. Allow its normal
+repository refresh, then verify:
+
+```sh
+kubectl -n argocd get application containerised-service-local
+kubectl -n containerised-service rollout status deployment/containerised-service
+kubectl -n containerised-service get pods
+kubectl -n containerised-service get hpa containerised-service
+```
+
+Expected result: the Application is `Synced` and `Healthy`, the Deployment is
+Available, the pod is Ready, and the HPA has a CPU metric.
+
+## Verify the service
+
+Open a temporary local port-forward:
+
+```sh
+kubectl -n containerised-service port-forward service/containerised-service 8001:8000
+```
+
+In another terminal, run:
+
+```sh
+curl --fail http://127.0.0.1:8001/health
+curl --fail http://127.0.0.1:8001/version
+curl --fail http://127.0.0.1:8001/config-summary
+```
+
+Expected responses report healthy status, application version `0.1.3`, and the
+local development configuration. Stop the port-forward with `Ctrl-C`.
+
+## Diagnose a failed rollout
+
+Gather evidence before editing desired state:
+
+```sh
+kubectl -n argocd get application containerised-service-local
+kubectl -n containerised-service get deployment containerised-service
+kubectl -n containerised-service get pods -o wide
+kubectl -n containerised-service get events --sort-by=.metadata.creationTimestamp
+kubectl -n containerised-service describe pod <pod-name>
+kubectl -n containerised-service logs <pod-name>
+kubectl kustomize apps/containerised-service/overlays/local
+```
+
+Compare Argo's Git revision, the rendered manifest, live image, pod state, and
+Events. Logs may legitimately be unavailable when a container never starts.
+Rank likely causes from this evidence, then make the smallest repair through a
+reviewed pull request.
+
+## Roll back through Git
+
+Use a revert commit so history remains visible and Argo CD receives a reviewed
+desired-state change:
+
+```sh
+git switch main
+git pull --ff-only
+git switch -c feature/008-rollback-<short-reason>
+git revert <faulty-commit>
+```
+
+Push that branch, review and merge its pull request, then wait for Argo CD and
+repeat the deployment and endpoint checks. For a merged pull request whose
+merge commit must be reverted, use `git revert -m 1 <merge-commit>`. Do not use
+`kubectl rollout undo` as the normal repair because Argo CD would treat that as
+drift and restore Git's still-faulty state.
+
+## Clean up the local cluster
+
+First confirm context `docker-desktop`. These commands remove the Application,
+workload namespace including its external Secret, metrics-server, and Argo CD:
+
+```sh
+kubectl delete -f argocd/applications/containerised-service-local.yaml
+kubectl delete namespace containerised-service
+kubectl delete -f /private/tmp/metrics-server-v0.9.0-components.yaml
+kubectl delete namespace argocd
+```
+
+Run the metrics-server deletion only if the checksum-verified manifest still
+exists at that path. Namespace deletion removes local data and is intentionally
+separate from normal GitOps operation; review the targets before running it.
+
+## Environment overlays
 
 To inspect an environment without changing a cluster, render its Kustomize
 overlay from the repository root:
@@ -121,12 +259,14 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issues 001–007 are complete. Argo CD reports the local Application `Synced`
-and `Healthy`; the Deployment is Available, its pod is Ready, and all three
-service endpoints return the expected `v0.1.3` responses. Metrics-server
-supplies the local HPA with CPU metrics. Issue 008 is the next step: perform a
-controlled failure, repair it through Git, test rollback, and finish the
-operating documentation.
+Issues 001–008 are implemented. A controlled nonexistent-image failure was
+diagnosed from Argo CD, rollout, pod, Event, log-availability, and rendered
+manifest evidence before repair. A two-step Git-revert test reproduced and
+then recovered that failure through Argo CD. The final state is `Synced` and
+`Healthy`; the Deployment is Available, its pod is Ready, the HPA has CPU
+metrics, and all endpoints return the expected `v0.1.3` responses. The next
+step is final pull-request validation followed by an explicitly approved
+Project 5 `v0.1.0` tag.
 
 Published image:
 
