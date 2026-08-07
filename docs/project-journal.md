@@ -7,8 +7,8 @@ it factual and replace stale status rather than accumulating a transcript.
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
 - **State:** Issues 001–008 and the Project 5 completion gate are complete;
-  `v0.1.0` release metadata is prepared but no tag exists yet
-- **Branch:** `feature/008-prepare-v0.1.0-release`
+  annotated release tag `v0.1.0` is published
+- **Branch:** `feature/008-record-v0.1.0-release`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
@@ -114,6 +114,10 @@ it factual and replace stale status rather than accumulating a transcript.
   HPA reported a valid CPU metric.
 - Reviewed every Project 5 completion-gate criterion and recorded its evidence
   in Issue 008. Prepared the `v0.1.0` changelog entry without creating a tag.
+- Merged the release metadata through pull request 19 at validated commit
+  `cdf7303`. After explicit approval, created annotated tag `v0.1.0` on that
+  commit and pushed only that tag to `origin`; remote verification resolved
+  the annotated tag to `cdf7303`.
 
 ## Decisions
 
@@ -127,9 +131,8 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Review and merge the `v0.1.0` release metadata after its pull-request checks
-pass. Pull `main`, verify the release commit, and request explicit approval
-before creating or pushing the `v0.1.0` tag.
+Review and merge this post-release status update. Project 5 is then complete;
+begin another project only after the learner agrees to proceed.
 
 ## Open questions
 

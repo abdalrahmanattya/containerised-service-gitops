@@ -45,5 +45,6 @@ first complete Project 5 release.
 - Repository secret-pattern checks passed, and no Secret value, token,
   kubeconfig, or credential was committed.
 
-All acceptance criteria are met. Release `v0.1.0` is prepared, but its tag must
-not be created or pushed until explicit approval is given.
+All acceptance criteria are met. After explicit approval, annotated tag
+`v0.1.0` was created on validated release commit `cdf7303` and pushed to
+`origin`.
