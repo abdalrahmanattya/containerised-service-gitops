@@ -6,9 +6,9 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 008 Git-revert test prepared to reintroduce the known image
-  failure; it has not been merged or reconciled yet
-- **Branch:** `feature/008-reintroduce-failure-by-revert`
+- **State:** Issue 008 rollback test reproduced the known failure; the recovery
+  revert is prepared for review
+- **Branch:** `feature/008-recover-by-reverting-revert`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
@@ -90,9 +90,12 @@ it factual and replace stale status rather than accumulating a transcript.
 - Verified `/health`, `/version`, and `/config-summary` returned the expected
   healthy, `0.1.3`, and development responses after recovery. The temporary
   localhost port-forward was stopped after verification.
-- Prepared a Git revert of pull request 14's merge commit. The revert restores
-  the intentionally invalid digest while retaining later diagnosis and
-  recovery evidence; a journal conflict was resolved for that purpose.
+- Merged the first rollback-test revert through pull request 16 at revision
+  `bcd224b`. Argo CD reconciled that revision, created a replacement pod, and
+  reproduced `ErrImagePull` and `ImagePullBackOff` with GHCR `NotFound` for the
+  all-zero digest. The previous healthy pod remained Ready.
+- Prepared a second Git revert that reverses commit `0500536` and restores the
+  known-good digest. No imperative Kubernetes rollback command was used.
 
 ## Decisions
 
@@ -106,9 +109,9 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Review and merge the first rollback-test revert, then observe the known image
-failure through Argo CD. After that observation, revert this new revert commit
-in a second pull request to restore the known-good Git state.
+Review and merge the recovery revert. Observe Argo CD reconcile the known-good
+digest and verify Application health, Deployment availability, pod readiness,
+HPA metrics, and service endpoints. Then document the completed rollback test.
 
 ## Open questions
 
