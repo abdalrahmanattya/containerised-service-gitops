@@ -6,9 +6,9 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 008 rollback test reproduced the known failure; the recovery
-  revert is prepared for review
-- **Branch:** `feature/008-recover-by-reverting-revert`
+- **State:** Issues 001–008 implemented and the Git-revert recovery verified;
+  final documentation and release gates are in progress
+- **Branch:** `feature/008-complete-documentation`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
@@ -96,6 +96,16 @@ it factual and replace stale status rather than accumulating a transcript.
   all-zero digest. The previous healthy pod remained Ready.
 - Prepared a second Git revert that reverses commit `0500536` and restores the
   known-good digest. No imperative Kubernetes rollback command was used.
+- Merged the recovery revert through pull request 17 at revision `d5cc2b7`.
+  Argo CD reconciled that exact revision and returned to `Synced` and
+  `Healthy`; the Deployment, pod, HPA, and all three endpoints passed final
+  verification on the known-good digest.
+- Completed README procedures for setup, validation, use, diagnosis, Git
+  rollback, and local cleanup without sharing a Secret value.
+- Final context, overlay, public-secret, and whitespace checks pass locally.
+  The complete local validation script cannot run because Kubeconform,
+  KubeLinter, and Trivy are not installed; the pull-request workflow installs
+  pinned versions and remains the required full gate.
 
 ## Decisions
 
@@ -109,9 +119,10 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Review and merge the recovery revert. Observe Argo CD reconcile the known-good
-digest and verify Application health, Deployment availability, pod readiness,
-HPA metrics, and service endpoints. Then document the completed rollback test.
+Review the completion documentation and confirm the pull-request validation
+workflow passes, then merge it. Re-run the completion-gate review from `main`
+and request explicit approval before creating and pushing the Project 5
+`v0.1.0` tag.
 
 ## Open questions
 
