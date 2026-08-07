@@ -6,9 +6,9 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 008 failure evidence is merged; focused image-digest repair
-  is prepared for review
-- **Branch:** `feature/008-repair-image-digest`
+- **State:** Issue 008 focused repair recovered the service; recovery evidence
+  is being documented before the Git-revert test
+- **Branch:** `feature/008-document-repair-recovery`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
@@ -83,6 +83,13 @@ it factual and replace stale status rather than accumulating a transcript.
 - Merged the diagnosis evidence through pull request 13 before editing desired
   state. Prepared a focused repair restoring the reviewed multi-architecture
   digest for Project 3 release `v0.1.3`.
+- Merged the focused repair through pull request 14 at revision `6ed8ef2`.
+  Argo CD returned to `Synced` and `Healthy`; the Deployment reported
+  Available and `NewReplicaSetAvailable`, the retained known-good pod remained
+  Ready, and the HPA reported 5% of its 70% CPU target.
+- Verified `/health`, `/version`, and `/config-summary` returned the expected
+  healthy, `0.1.3`, and development responses after recovery. The temporary
+  localhost port-forward was stopped after verification.
 
 ## Decisions
 
@@ -96,9 +103,10 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Review and merge the focused image-digest repair. Observe Argo CD return the
-Application and Deployment to healthy state, then test the documented
-Git-revert rollback path.
+Merge the repair-recovery evidence. Then test rollback in two reviewed steps:
+revert pull request 14's merge commit to reintroduce the known image failure,
+observe reconciliation, and revert that revert to restore the known-good Git
+state through Argo CD.
 
 ## Open questions
 
