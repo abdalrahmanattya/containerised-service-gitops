@@ -223,6 +223,52 @@ Pull error: short read: expected 856 bytes but got 0: unexpected EOF
 Project 3 release `v0.1.3` corrected the architecture mismatch by publishing
 both `linux/amd64` and `linux/arm64` manifests under top-level digest
 `sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2`.
-Project 5 updates that digest through Git so Argo CD can reconcile it. The HPA
-also reports unavailable CPU metrics because metrics-server is not installed
-in this Docker Desktop cluster; that does not cause the image pull failure.
+Project 5 updated that digest through Git and Argo CD reconciled it. The new
+pod became Ready and the Deployment became Available.
+
+### Local metrics-server
+
+The local HPA needs the Kubernetes Metrics API. Metrics-server `v0.9.0` was
+selected for Kubernetes 1.36. Its official `components.yaml` SHA-256 is:
+
+```text
+1cec29a5267809306a2c6ec74a3e449abbb705b4a8beed0c8a1963910f72c79b
+```
+
+After confirming context `docker-desktop`, the standard manifest was downloaded,
+verified, and installed with:
+
+```sh
+curl --fail --silent --show-error --location \
+  --output /private/tmp/metrics-server-v0.9.0-components.yaml \
+  https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.9.0/components.yaml
+shasum -a 256 /private/tmp/metrics-server-v0.9.0-components.yaml
+kubectl apply -f /private/tmp/metrics-server-v0.9.0-components.yaml
+```
+
+The observed checksum matched the reviewed value above before `kubectl apply`
+was approved and run.
+
+Docker Desktop's kubelet certificate does not contain the node IP as a subject
+alternative name. Metrics-server therefore failed certificate verification.
+For this local learning cluster only, the following explicitly approved patch
+was applied:
+
+```sh
+kubectl -n kube-system patch deployment metrics-server --type=json \
+  -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+```
+
+This disables kubelet certificate verification and must not be copied to a
+production cluster. Verification commands and observed results were:
+
+```sh
+kubectl top nodes
+kubectl -n containerised-service top pods
+kubectl -n containerised-service get hpa containerised-service
+kubectl -n argocd get application containerised-service-local
+```
+
+The Metrics API returned node and pod usage, the HPA reported
+`ScalingActive=True` with CPU below its 70% target, and Argo CD reported the
+Application `Synced` and `Healthy`.
