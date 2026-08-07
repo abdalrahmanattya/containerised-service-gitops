@@ -6,9 +6,9 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 008 controlled image-pull failure reproduced and diagnosed;
-  evidence is being recorded before repair
-- **Branch:** `feature/008-document-image-failure`
+- **State:** Issue 008 failure evidence is merged; focused image-digest repair
+  is prepared for review
+- **Branch:** `feature/008-repair-image-digest`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
@@ -80,6 +80,9 @@ it factual and replace stale status rather than accumulating a transcript.
 - Ranked the invalid digest as the demonstrated cause. Registry credentials,
   scheduling, probes, Secret configuration, and HPA were ruled out or shown
   not to be reached; the HPA remained healthy at 6% of its 70% CPU target.
+- Merged the diagnosis evidence through pull request 13 before editing desired
+  state. Prepared a focused repair restoring the reviewed multi-architecture
+  digest for Project 3 release `v0.1.3`.
 
 ## Decisions
 
@@ -93,9 +96,9 @@ it factual and replace stale status rather than accumulating a transcript.
 
 ## Resume here
 
-Commit and merge the failure-diagnosis evidence before editing the Deployment.
-Then restore the known-good image digest in a focused repair pull request,
-observe Argo CD recovery, and test the documented Git-revert rollback path.
+Review and merge the focused image-digest repair. Observe Argo CD return the
+Application and Deployment to healthy state, then test the documented
+Git-revert rollback path.
 
 ## Open questions
 
