@@ -121,11 +121,12 @@ and component boundaries are described in
 
 ## Current status and next step
 
-Issues 001–006 are complete on `main`. Issue 007 is in progress. Project 3
-release `v0.1.3` is published for both `linux/amd64` and `linux/arm64`, and this
-repository now pins its reviewed top-level immutable digest. After this change
-is merged, Argo CD will reconcile the local workload and its rollout and
-endpoints must be verified.
+Issues 001–007 are complete. Argo CD reports the local Application `Synced`
+and `Healthy`; the Deployment is Available, its pod is Ready, and all three
+service endpoints return the expected `v0.1.3` responses. Metrics-server
+supplies the local HPA with CPU metrics. Issue 008 is the next step: perform a
+controlled failure, repair it through Git, test rollback, and finish the
+operating documentation.
 
 Published image:
 

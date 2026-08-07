@@ -6,9 +6,9 @@ it factual and replace stale status rather than accumulating a transcript.
 ## Current status
 
 - **Project:** 5 — Kubernetes Deployment and GitOps Workflow
-- **State:** Issue 007 in progress; updating desired state to the reviewed
-  multi-architecture Project 3 `v0.1.3` image digest
-- **Branch:** `feature/007-update-multiarch-image`
+- **State:** Issue 007 complete locally; verification evidence and the local
+  metrics-server exception are being documented
+- **Branch:** `feature/007-document-local-verification`
 - **Remote:** `origin` points to the public GitHub Project 5 repository
 - **Target:** Docker Desktop local Kubernetes; context `docker-desktop` is
   active and its control-plane node is Ready
@@ -55,6 +55,16 @@ it factual and replace stale status rather than accumulating a transcript.
 - Published Project 3 `v0.1.3` with linux/amd64 and linux/arm64 manifests under
   top-level digest
   `sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2`.
+- Merged the Project 5 digest update and observed Argo CD replace the failed
+  pod with the arm64-compatible image. The Deployment became Available and the
+  pod became Ready.
+- Verified `/health` returned healthy, `/version` returned `0.1.3`, and
+  `/config-summary` returned the reviewed development configuration.
+- Installed checksum-verified metrics-server `v0.9.0` on `docker-desktop`.
+  Docker Desktop's kubelet certificate lacks an IP SAN, so the local-only
+  `--kubelet-insecure-tls` exception was explicitly approved and applied.
+- Verified live node and pod metrics, HPA `ScalingActive=True`, and Argo CD
+  Application status `Synced` and `Healthy`.
 
 ## Decisions
 
@@ -63,20 +73,22 @@ it factual and replace stale status rather than accumulating a transcript.
 - Project 5 owns Kubernetes desired state and GitOps operating documentation.
 - Git contains Secret references but no Secret values.
 - Cluster changes require an explicit context check and learner approval.
+- [ADR-003](decisions/ADR-003-local-metrics-server-tls-exception.md): permit
+  insecure kubelet TLS only for metrics-server on the local learning cluster.
 
 ## Resume here
 
-Continue Issue 007:
+Finish the Issue 007 documentation pull request, then begin Issue 008:
 
-1. Validate and merge the Project 5 immutable digest update through a pull
-   request.
-2. Let Argo CD reconcile the digest change.
-3. Verify rollout, endpoints, deployed digest, configuration, events, and logs.
+1. Review and merge the Issue 007 verification documentation.
+2. Plan one controlled GitOps failure without changing the cluster until its
+   exact target and mutation are approved.
+3. Diagnose the failure from status, events, logs, and rendered desired state;
+   repair through Git and test the documented rollback path.
 
 ## Open questions
 
-- Confirm the Project 3 package remains public before Argo CD deployment.
-- Select and pin the manifest schema and security validation tools in Issue 006.
+- Select the controlled failure used in Issue 008.
 
 ## Session hand-off checklist
 

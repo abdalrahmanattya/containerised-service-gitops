@@ -25,3 +25,5 @@ All notable changes to this project will be documented in this file.
   the separate metrics-server limitation.
 - Issue 007's desired-state update to the reviewed Project 3 `v0.1.3`
   multi-architecture image digest.
+- Issue 007's successful local rollout, endpoint verification, metrics-server
+  setup, active HPA metrics, and Healthy Argo CD reconciliation evidence.
