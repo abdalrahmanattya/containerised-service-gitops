@@ -1,0 +1,42 @@
+%% Public architecture source. Target: Docker Desktop Kubernetes only.
+flowchart LR
+  subgraph PUBLIC["PUBLIC DELIVERY BOUNDARY"]
+    APP["Project 3 application\nsource + tests"]
+    ACTIONS["GitHub Actions\nbuild, scan, publish"]
+    GHCR["GHCR\nversioned OCI image\nimmutable digest"]
+    PR["Project 5 pull request\nKustomize render + schema +\nsecurity + secret-pattern checks"]
+    MAIN["Git main\nreviewed desired state"]
+    APP --> ACTIONS --> GHCR
+    PR --> MAIN
+    GHCR -. "digest copied into\nreviewed manifest" .-> PR
+  end
+
+  subgraph LOCAL["LOCAL OPERATOR / DOCKER DESKTOP BOUNDARY"]
+    HUMAN["Human operator\nconfirms context and mutation"]
+    ARGO["Argo CD\nread-only Git observer\nreconcile local overlay"]
+    subgraph CLUSTER["Docker Desktop Kubernetes cluster"]
+      KUSTOMIZE["Kustomize overlay\nbase + local patches"]
+      DEPLOY["Deployment\nrolling update"]
+      POD["Pod\nnon-root HTTP service"]
+      SVC["ClusterIP Service\n:8000"]
+      CONFIG["ConfigMap\nSERVICE_NAME / APP_ENV / LOG_LEVEL"]
+      SECRET["External Secret\ncreated out of band"]
+      HPA["HPA\n1–3 replicas / CPU 70%"]
+      POLICY["NetworkPolicy\ndefault deny + same namespace"]
+      KUSTOMIZE --> DEPLOY --> POD --> SVC
+      CONFIG --> POD
+      SECRET -. "reference only" .-> POD
+      HPA -. "scales" .-> DEPLOY
+      POLICY -. "constrains ingress" .-> POD
+    end
+    HUMAN --> ARGO
+    MAIN --> ARGO --> KUSTOMIZE
+    HUMAN -. "local protected file" .-> SECRET
+  end
+
+  classDef public fill:#e8f1ff,stroke:#2f5ea8,color:#102a43
+  classDef local fill:#eaf8ef,stroke:#2b7a4b,color:#12351f
+  classDef boundary fill:#fff4d6,stroke:#a66b00,color:#4a3200
+  class APP,ACTIONS,GHCR,PR,MAIN public
+  class HUMAN,ARGO,KUSTOMIZE,DEPLOY,POD,SVC,CONFIG,SECRET,HPA,POLICY local
+  class PUBLIC,LOCAL,CLUSTER boundary

@@ -14,30 +14,16 @@ The repositories have separate responsibilities:
 
 ## Delivery and reconciliation flow
 
-```text
-Project 3 tag
-    |
-    v
-GitHub Actions -> ghcr.io versioned image
-                          |
-Project 5 feature branch  |
-    |                     |
-    v                     |
-pull request -> render + schema + security validation
-    |
-    v
-merge to main
-    |
-    v
-Argo CD watches selected Kustomize overlay
-    |
-    v
-Docker Desktop Kubernetes -> Deployment -> Pod -> Project 3 image
-                                      |
-                             ClusterIP Service :8000
-```
+The diagram below is the source of truth for the public architecture board;
+the committed SVG is suitable for GitHub and screen readers.
 
-## Planned repository layout
+![Architecture: GHCR digest through validation, Git, Argo CD, and Docker Desktop Kubernetes](architecture.svg)
+
+Edit [architecture.mmd](architecture.mmd) when the flow changes, then
+regenerate `architecture.svg` with a Mermaid renderer and review the SVG's
+accessible title and description.
+
+## Repository layout
 
 ```text
 apps/containerised-service/
@@ -77,11 +63,11 @@ rendered YAML.
 - **Diagnosability:** operations begin with status, events, logs, and rendered
   configuration.
 - **Recoverability:** a known-good Git revision is the rollback source.
-- **Portability:** the initial configuration avoids cloud-specific resources.
+- **Portability:** the configuration avoids cloud-specific resources.
 
 ## Evolution constraints
 
 Do not add a cloud cluster, ingress controller, service mesh, secret manager,
 progressive-delivery controller, or multi-cluster promotion merely to resemble
 production. Each changes the security or operating boundary and requires a
-separate decision and learner approval.
+separate decision and maintainer approval.

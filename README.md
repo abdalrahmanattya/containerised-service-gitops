@@ -1,14 +1,15 @@
 # Containerised Service Kubernetes and GitOps
 
-This repository is Project 5 of the AI-assisted cloud engineering learning
-roadmap. It holds the versioned Kubernetes desired state for the service built
-in Project 3 and demonstrates how a reviewed Git change becomes a local
-deployment through GitHub, Kustomize, and Argo CD.
+This repository is the Kubernetes desired-state and GitOps operations half of
+the Containerised Service case study. It deploys the HTTP service built in the
+separate Project 3 application repository to a Docker Desktop Kubernetes
+cluster. A reviewed Git change is rendered by Kustomize and reconciled by Argo
+CD; this repository does not build the application image.
 
-## What this project will do
+## What this project does
 
-The project will deploy the Project 3 HTTP service to Docker Desktop's local
-Kubernetes cluster. It will define:
+The project deploys the Project 3 HTTP service to Docker Desktop's local
+Kubernetes cluster. It defines:
 
 - a Kubernetes Deployment and Service;
 - liveness and readiness probes for `GET /health`;
@@ -30,7 +31,7 @@ case study. CICD owns source, tests, image construction, scanning, and the
 multi-architecture GHCR release. This repository owns reviewed Kubernetes
 desired state, environment validation, Argo CD reconciliation, and rollback.
 
-## Why this is useful
+## How it works
 
 Kubernetes configuration is operational code. A wrong port, image tag, probe,
 permission, or resource value can prevent a healthy application from serving
@@ -38,23 +39,15 @@ traffic. This project makes those changes reviewable and teaches how to use
 rendered manifests, pod status, events, and logs to diagnose deployment
 failures before editing files.
 
-The intended delivery path is:
-
-```text
-Project 3 release -> GHCR image
-                         |
-GitHub pull request -> validated Kustomize desired state
-                         |
-                     merge to main
-                         |
-                 Argo CD reconciliation
-                         |
-              local Kubernetes deployment
-```
+The delivery path and ownership boundaries are shown in the companion
+[architecture diagram](docs/architecture.svg) (generated from the
+[Mermaid source](docs/architecture.mmd)). The public GitHub/GHCR boundary ends
+at desired state and an immutable image digest; the local operator owns the
+kubeconfig, runtime Secret, Argo CD, and Docker Desktop cluster.
 
 ## Safety boundaries
 
-- The initial target is a local Docker Desktop Kubernetes cluster only.
+- The supported target is a local Docker Desktop Kubernetes cluster only.
 - No cloud cluster, paid service, or production environment is required.
 - No token, password, kubeconfig, private key, or Secret value belongs in Git.
 - Secret manifests may contain references or documented placeholders only.
@@ -79,7 +72,6 @@ A contributor:
 From the repository root, run the lightweight repository checks:
 
 ```sh
-./scripts/test-context-resume.sh
 ./scripts/test-overlays.sh
 ./scripts/check-public-secrets.sh
 git diff --check
@@ -121,9 +113,9 @@ kubectl apply -f argocd/applications/containerised-service-local.yaml
 
 The protected file contains a value chosen by the local operator; nobody needs
 to send you a shared Secret. Do not place that file or its value in this
-repository. The `APP_RUNTIME_SECRET` reference is intentional learning
-evidence for external Secret handling and missing-Secret diagnosis; the simple
-service does not return or log its value. Metrics-server is also required for HPA metrics. The pinned,
+repository. The `APP_RUNTIME_SECRET` reference documents external Secret
+handling and missing-Secret diagnosis; the simple service does not return or
+log its value. Metrics-server is also required for HPA metrics. The pinned,
 checksum-verified Docker Desktop procedure and its local-only TLS exception are
 documented in [`docs/development.md`](docs/development.md#local-metrics-server).
 
@@ -256,16 +248,15 @@ and component boundaries are described in
 | --- | --- |
 | `docs/requirements.md` | Deployment, validation, GitOps, and safety contracts |
 | `docs/architecture.md` | Repository boundaries, components, and delivery flow |
-| `docs/development.md` | Planned and verified local commands |
+| `docs/development.md` | Verified local commands and operational evidence |
 | `docs/issues/` | Ordered, bounded implementation issues |
 | `docs/decisions/` | Durable decisions and trade-offs |
-| `docs/learning-roadmap.md` | Project 5 phase and completion gate |
 | `CHANGELOG.md` | Notable user-visible changes |
 | `LICENSE` | MIT license for the repository |
 
-## Current status and next step
+## Release status
 
-Issues 001–008 and the Project 5 completion gate are complete. A controlled
+Version `v0.1.0` is complete and released. A controlled
 nonexistent-image failure was diagnosed from Argo CD, rollout, pod, Event,
 log-availability, and rendered manifest evidence before repair. A two-step
 Git-revert test reproduced and then recovered that failure through Argo CD.

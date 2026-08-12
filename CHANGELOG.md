@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Refreshed public documentation to describe the released service, current
+  Docker Desktop/Argo CD workflow, usage, validation, and safety boundaries.
+- Added a maintainable Mermaid architecture source and accessible SVG covering
+  GHCR digest delivery, PR validation, Git, Argo CD, and Kubernetes controls.
+- Removed local orchestration context artifacts from the public tree; private
+  copies remain locally excluded.
+
 ## [0.1.0] - 2026-08-07
 
 ### Added

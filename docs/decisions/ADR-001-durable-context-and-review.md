@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-05
-- **Decision owners:** Learner and project maintainer
+- **Decision owners:** Project maintainer
 
 ## Context
 
@@ -12,10 +12,11 @@ and rollback intent are not versioned together.
 
 ## Decision
 
-Use repository files and Git history as the durable source of project context.
-Use focused feature branches and GitHub pull requests as the review boundary
-before changes enter `main`. Keep a factual project journal with an exact resume
-point, document durable trade-offs in ADRs, and verify each feature locally.
+Use repository files and Git history as the durable source of engineering
+context. Use focused feature branches and GitHub pull requests as the review
+boundary before changes enter `main`. Record durable trade-offs in ADRs and
+verify each feature locally. Private operator notes, if any, remain outside the
+public repository.
 
 ## Consequences
 
@@ -31,5 +32,6 @@ The cost is maintaining documentation and reviewing small changes before merge.
 
 ## Verification
 
-`scripts/test-context-resume.sh` verifies the required hand-off files. Feature
-pull requests must include exact validation evidence and rollback impact.
+Feature pull requests must include exact validation evidence and rollback
+impact. Public documentation must remain usable without private operator notes
+or assistant-specific instructions.

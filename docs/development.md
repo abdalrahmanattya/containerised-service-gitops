@@ -1,43 +1,41 @@
 # Development and verification
 
-## Current planning checks
+## Repository checks
 
 Run from the repository root:
 
 ```sh
-./scripts/test-context-resume.sh
+./scripts/test-overlays.sh
+./scripts/check-public-secrets.sh
 git diff --check
 git status --short --branch
 ```
 
-Expected result: the context script reports all checks as `ok`, the diff has no
-whitespace errors, and Git shows only the intentional feature files.
+Expected result: both overlays render, public-secret patterns are absent, the
+diff has no whitespace errors, and Git shows only intentional changes.
 
-## Planned toolchain
+## Toolchain and validation
 
 - `kubectl` with built-in Kustomize for rendering and cluster operations
-- a pinned Kubernetes schema validator selected in Issue 006
-- a pinned manifest security scanner selected in Issue 006
+- Kubeconform `0.8.0`, KubeLinter `0.8.3`, and Trivy `0.69.3` in CI
 - GitHub Actions for pull-request validation
-- Docker Desktop Kubernetes as the only initial deployment target
+- Docker Desktop Kubernetes as the only deployment target
 - Argo CD for local reconciliation after explicit installation approval
-- Argo CD `v3.5.0` for the initial local installation
+- Argo CD `v3.5.0` for the local installation
 
-Exact installation versions and commands will be selected and verified in the
-issue that introduces each tool. Do not copy an unverified `latest` install
-command into the workflow.
+The versions and commands in this document and the workflow are the reviewed
+baseline. Do not replace them with an unverified `latest` install command.
 
-## Planned local validation shape
-
-The eventual local workflow will include commands equivalent to:
+Render both overlays without contacting a cluster:
 
 ```sh
 kubectl kustomize apps/containerised-service/overlays/local
 kubectl kustomize apps/containerised-service/overlays/staging
 ```
 
-Schema and security commands are intentionally deferred until their versions,
-inputs, and failure policies are reviewed in Issue 006.
+The complete validation script requires the pinned tools above; when they are
+not installed locally, run the render, overlay, and public-secret checks and
+rely on the GitHub workflow for the full gate.
 
 ## Issue 003 base validation
 
@@ -54,9 +52,8 @@ named `http` port (`8000`).
 
 The base requests 100m CPU and 128Mi memory to reserve a small, predictable
 amount for this HTTP service, and limits it to 500m CPU and 256Mi memory to
-prevent a single replica from consuming the local cluster. These values are a
-learning-environment starting point and will be reviewed with real evidence in
-the deployment issue.
+prevent a single replica from consuming the local cluster. These values are the
+reviewed local baseline.
 
 The pod runs as numeric user and group `10001`, disables Kubernetes API-token
 mounting and privilege escalation, drops Linux capabilities, uses the runtime
@@ -251,7 +248,7 @@ was approved and run.
 
 Docker Desktop's kubelet certificate does not contain the node IP as a subject
 alternative name. Metrics-server therefore failed certificate verification.
-For this local learning cluster only, the following explicitly approved patch
+For this local cluster only, the following explicitly approved patch
 was applied:
 
 ```sh

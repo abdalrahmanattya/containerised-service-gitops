@@ -8,10 +8,10 @@ be divided into reviewable issues.
 
 ## Scope
 
-- Root README, working instructions, changelog, roadmap, and project journal
+- Root README, working instructions, changelog, requirements, and architecture
 - Requirements, architecture, development plan, and accepted ADRs
 - Ordered issue specifications and pull-request template
-- Structural context-resume verification
+- Structural documentation verification
 
 No Kubernetes manifests, workflow execution, image publication, cluster setup,
 or deployment is included.
@@ -21,13 +21,12 @@ or deployment is included.
 - A fresh session can reconstruct purpose, rules, status, and exact next step.
 - Project 3 and Project 5 ownership boundaries are explicit.
 - Completion gate, safety boundaries, and rollback direction are documented.
-- `./scripts/test-context-resume.sh` and `git diff --check` pass.
+- `git diff --check` passes.
 - The complete diff is reviewed before commit.
 
 ## Verification
 
 ```sh
-./scripts/test-context-resume.sh
 git diff --check
 git status --short --branch
 ```
