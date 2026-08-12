@@ -40,11 +40,15 @@ traffic. This repository makes those changes reviewable and provides an
 evidence-based operating procedure using rendered manifests, pod status,
 events, and logs before editing files.
 
-The delivery path and ownership boundaries are shown in the companion
-[architecture diagram](docs/architecture.svg) (generated from the
-[Mermaid source](docs/architecture.mmd)). The public GitHub/GHCR boundary ends
-at desired state and an immutable image digest; the local operator owns the
-kubeconfig, runtime Secret, Argo CD, and Docker Desktop cluster.
+The delivery path and ownership boundaries are shown below. The public
+GitHub/GHCR boundary ends at desired state and an immutable image digest; the
+local operator owns the kubeconfig, runtime Secret, Argo CD, and Docker Desktop
+cluster.
+
+![Containerised Service GitOps architecture: GHCR digest through pull-request validation, Git main, Argo CD, and Docker Desktop Kubernetes](docs/architecture.svg)
+
+The image is generated from the companion [Mermaid source](docs/architecture.mmd)
+so the flow remains maintainable as the manifests evolve.
 
 ## Safety boundaries
 
