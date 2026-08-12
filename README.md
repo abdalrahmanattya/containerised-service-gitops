@@ -1,15 +1,15 @@
 # Containerised Service Kubernetes and GitOps
 
 This repository is the Kubernetes desired-state and GitOps operations half of
-the Containerised Service case study. It deploys the HTTP service built in the
-separate Project 3 application repository to a Docker Desktop Kubernetes
-cluster. A reviewed Git change is rendered by Kustomize and reconciled by Argo
-CD; this repository does not build the application image.
+the Containerised Service case study. It deploys a small HTTP service from its
+separate application repository to a Docker Desktop Kubernetes cluster. A
+reviewed Git change is rendered by Kustomize and reconciled by Argo CD; this
+repository does not build the application image.
 
 ## What this project does
 
-The project deploys the Project 3 HTTP service to Docker Desktop's local
-Kubernetes cluster. It defines:
+The project deploys the HTTP service to Docker Desktop's local Kubernetes
+cluster. It defines:
 
 - a Kubernetes Deployment and Service;
 - liveness and readiness probes for `GET /health`;
@@ -26,18 +26,19 @@ The deployed service exposes `GET /health`, `GET /version`, and
 [`containerised-service-cicd`](https://github.com/abdalrahmanattya/containerised-service-cicd)
 application repository.
 
-Together, these repositories form the **Secure Container Delivery & GitOps**
-case study. CICD owns source, tests, image construction, scanning, and the
-multi-architecture GHCR release. This repository owns reviewed Kubernetes
-desired state, environment validation, Argo CD reconciliation, and rollback.
+Together, the application and this repository form the **Secure Container
+Delivery & GitOps** case study. The application repository owns source, tests,
+image construction, scanning, and the multi-architecture GHCR release. This
+repository owns reviewed Kubernetes desired state, environment validation,
+Argo CD reconciliation, and rollback.
 
 ## How it works
 
 Kubernetes configuration is operational code. A wrong port, image tag, probe,
 permission, or resource value can prevent a healthy application from serving
-traffic. This project makes those changes reviewable and teaches how to use
-rendered manifests, pod status, events, and logs to diagnose deployment
-failures before editing files.
+traffic. This repository makes those changes reviewable and provides an
+evidence-based operating procedure using rendered manifests, pod status,
+events, and logs before editing files.
 
 The delivery path and ownership boundaries are shown in the companion
 [architecture diagram](docs/architecture.svg) (generated from the
@@ -56,9 +57,17 @@ kubeconfig, runtime Secret, Argo CD, and Docker Desktop cluster.
 - GitHub publication and image publication use reviewed workflows and scoped
   repository permissions.
 
+## Non-goals
+
+- Managed or production Kubernetes, cloud-provider resources, or paid services.
+- Public ingress, DNS, TLS certificates, or internet exposure.
+- A service mesh, database, persistent storage, or automatic promotion between
+  environments.
+- Building application images or storing Secret values in this repository.
+
 ## Contributor workflow
 
-A contributor:
+A change owner:
 
 1. changes an environment overlay on a feature branch;
 2. opens a GitHub pull request;
@@ -178,7 +187,7 @@ desired-state change:
 ```sh
 git switch main
 git pull --ff-only
-git switch -c feature/008-rollback-<short-reason>
+git switch -c feature/rollback-<short-reason>
 git revert <faulty-commit>
 ```
 
@@ -249,7 +258,7 @@ and component boundaries are described in
 | `docs/requirements.md` | Deployment, validation, GitOps, and safety contracts |
 | `docs/architecture.md` | Repository boundaries, components, and delivery flow |
 | `docs/development.md` | Verified local commands and operational evidence |
-| `docs/issues/` | Ordered, bounded implementation issues |
+| `docs/issues/` | Historical implementation records |
 | `docs/decisions/` | Durable decisions and trade-offs |
 | `CHANGELOG.md` | Notable user-visible changes |
 | `LICENSE` | MIT license for the repository |
@@ -262,8 +271,8 @@ log-availability, and rendered manifest evidence before repair. A two-step
 Git-revert test reproduced and then recovered that failure through Argo CD.
 The final state is `Synced` and `Healthy`; the Deployment is Available, its pod
 is Ready, the HPA has CPU metrics, and all endpoints return the expected
-`v0.1.3` responses. Project 5 release `v0.1.0` is published as an annotated Git
-tag on validated commit `cdf7303`.
+`v0.1.3` responses. Release `v0.1.0` is published as an annotated Git tag on
+validated commit `cdf7303`.
 
 Published image:
 
