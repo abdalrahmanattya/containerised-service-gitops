@@ -25,6 +25,11 @@ The deployed service exposes `GET /health`, `GET /version`, and
 [`containerised-service-cicd`](https://github.com/abdalrahmanattya/containerised-service-cicd)
 application repository.
 
+Together, these repositories form the **Secure Container Delivery & GitOps**
+case study. CICD owns source, tests, image construction, scanning, and the
+multi-architecture GHCR release. This repository owns reviewed Kubernetes
+desired state, environment validation, Argo CD reconciliation, and rollback.
+
 ## Why this is useful
 
 Kubernetes configuration is operational code. A wrong port, image tag, probe,
@@ -116,7 +121,9 @@ kubectl apply -f argocd/applications/containerised-service-local.yaml
 
 The protected file contains a value chosen by the local operator; nobody needs
 to send you a shared Secret. Do not place that file or its value in this
-repository. Metrics-server is also required for HPA metrics. The pinned,
+repository. The `APP_RUNTIME_SECRET` reference is intentional learning
+evidence for external Secret handling and missing-Secret diagnosis; the simple
+service does not return or log its value. Metrics-server is also required for HPA metrics. The pinned,
 checksum-verified Docker Desktop procedure and its local-only TLS exception are
 documented in [`docs/development.md`](docs/development.md#local-metrics-server).
 
@@ -247,15 +254,14 @@ and component boundaries are described in
 
 | Path | Purpose |
 | --- | --- |
-| `AGENTS.md` | Safe collaboration instructions for Codex |
 | `docs/requirements.md` | Deployment, validation, GitOps, and safety contracts |
 | `docs/architecture.md` | Repository boundaries, components, and delivery flow |
 | `docs/development.md` | Planned and verified local commands |
 | `docs/issues/` | Ordered, bounded implementation issues |
 | `docs/decisions/` | Durable decisions and trade-offs |
-| `docs/project-journal.md` | Current state and exact resume point |
 | `docs/learning-roadmap.md` | Project 5 phase and completion gate |
 | `CHANGELOG.md` | Notable user-visible changes |
+| `LICENSE` | MIT license for the repository |
 
 ## Current status and next step
 
