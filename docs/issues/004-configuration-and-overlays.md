@@ -16,7 +16,7 @@ base workload or committing sensitive values.
 ## Acceptance criteria
 
 - Both overlays render independently and preserve base selectors and probes.
-- Configuration matches the Project 3 validation contract.
+- Configuration matches the application service validation contract.
 - No Secret value, placeholder that resembles a credential, or generated
   Secret object is committed.
 - Missing external Secret behaviour and diagnosis are documented.

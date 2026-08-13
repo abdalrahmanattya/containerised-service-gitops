@@ -3,7 +3,7 @@
 ## Outcome
 
 Demonstrate evidence-led diagnosis and GitOps recovery before documenting the
-first complete Project 5 release.
+first complete repository release.
 
 ## Scope
 
@@ -14,7 +14,7 @@ first complete Project 5 release.
 - Rank likely causes from that evidence before editing files
 - Repair through a focused Git change and observe reconciliation
 - Reintroduce and reverse the change with a tested Git revert rollback
-- Complete user, operations, release, and learning documentation
+- Complete user, operations, release, and maintenance documentation
 - Tag `v0.1.0` after all gates pass and publication is approved
 
 ## Acceptance criteria

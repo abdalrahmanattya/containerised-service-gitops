@@ -62,7 +62,7 @@ pinned by its reviewed immutable digest.
 
 ## Reviewed application image
 
-Issue 002 published the public Project 3 image. Kubernetes desired state should
+Issue 002 published the public application image. Kubernetes desired state should
 use the immutable digest rather than a moving tag:
 
 ```text
@@ -217,10 +217,10 @@ Kubernetes node: arm64
 Pull error: short read: expected 856 bytes but got 0: unexpected EOF
 ```
 
-Project 3 release `v0.1.3` corrected the architecture mismatch by publishing
+Application release `v0.1.3` corrected the architecture mismatch by publishing
 both `linux/amd64` and `linux/arm64` manifests under top-level digest
 `sha256:6a9075b289a699692f60f6936b84590c8ad487071145a909ae7c3de98025f3b2`.
-Project 5 updated that digest through Git and Argo CD reconciled it. The new
+The GitOps repository updated that digest through Git and Argo CD reconciled it. The new
 pod became Ready and the Deployment became Available.
 
 ### Local metrics-server

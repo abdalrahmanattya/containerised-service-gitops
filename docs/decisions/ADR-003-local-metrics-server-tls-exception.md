@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-07
-- **Decision owners:** Learner and project maintainer
+- **Decision owners:** Repository maintainer and reviewers
 
 ## Context
 
@@ -14,7 +14,7 @@ remained unavailable and Argo CD reported the Application Degraded.
 
 ## Decision
 
-Install metrics-server `v0.9.0` only on the `docker-desktop` learning cluster
+Install metrics-server `v0.9.0` only on the local `docker-desktop` cluster
 and add `--kubelet-insecure-tls` to its Deployment. This exception is not part
 of the application manifests and must not be used for a production cluster.
 
@@ -37,10 +37,9 @@ configuration.
 
 ### Remove the HPA
 
-Rejected because CPU-based autoscaling is an explicit Project 5 learning
-outcome.
+Rejected because CPU-based autoscaling is an explicit repository requirement.
 
 ### Accept a permanently Degraded Application
 
 Rejected because it hides real failures behind an expected warning and weakens
-the reconciliation exercise.
+reconciliation verification.

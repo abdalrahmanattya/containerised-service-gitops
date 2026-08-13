@@ -2,8 +2,8 @@
 
 ## Outcome
 
-Define the reusable Kubernetes workload and service for the immutable Project 3
-image.
+Define the reusable Kubernetes workload and service for the immutable
+application image.
 
 ## Scope
 
@@ -21,6 +21,7 @@ image.
 - The base renders with the reviewed kubectl/Kustomize version.
 - Deployment and Service selectors match.
 - Probes target the documented service port and health path.
-- Image uses the reviewed GHCR version/digest from Issue 002.
+- Image uses the reviewed GHCR version/digest from the application delivery
+  contract.
 - The pod cannot request privilege escalation or run as root.
 - No cluster mutation occurs in this issue.

@@ -2,21 +2,22 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-05
-- **Decision owners:** Learner and project maintainer
+- **Decision owners:** Repository maintainer and reviewers
 
 ## Context
 
-Project 5 needs realistic, reviewable deployment configuration without a cloud
-account. It must preserve the boundary between Project 3 application delivery
-and Project 5 environment desired state, while giving concrete GitOps and
-rollback practice.
+The GitOps repository needs realistic, reviewable deployment configuration
+without a cloud account. It must preserve the boundary between application
+delivery and environment desired state, while providing concrete GitOps and
+rollback validation.
 
 ## Decision
 
-- Keep Project 5 in the separate public `containerised-service-gitops`
+- Keep the desired state in the separate public `containerised-service-gitops`
   repository.
-- Keep application source and image construction in Project 3.
-- Publish the reviewed Project 3 release image to public GHCR using a GitHub
+- Keep application source and image construction in
+  `containerised-service-cicd`.
+- Publish the reviewed application release image to public GHCR using a GitHub
   workflow with scoped repository permissions.
 - Use Kustomize bases and overlays, rendered by the Kustomize version embedded
   in the reviewed kubectl toolchain.
@@ -31,7 +32,7 @@ rollback practice.
 - The application artifact and environment configuration have clear owners.
 - Kustomize supports overlays without a templating language or chart packaging.
 - Public GitHub and GHCR require no repository or image-pull credential in the
-  local learning setup.
+  local Docker Desktop setup.
 - Argo CD makes drift and reconciliation visible.
 - A local cluster avoids cloud cost and provider credentials.
 
@@ -53,7 +54,7 @@ Kustomize exposes the Kubernetes objects directly with less packaging overhead.
 
 ### Direct kubectl deployment only
 
-Useful for validation but insufficient for practising continuous Git
+Useful for validation but insufficient for operating continuous Git
 reconciliation and visible drift.
 
 ### Managed Kubernetes

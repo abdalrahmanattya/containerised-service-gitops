@@ -10,12 +10,12 @@
   <rect x="30" y="30" width="1540" height="400" class="boundary public"/>
   <text x="60" y="72" class="title">PUBLIC DELIVERY BOUNDARY</text>
   <text x="60" y="98" class="note">Public source, checks, desired state, and a versioned image; no cluster credentials or Secret values.</text>
-  <rect x="70" y="145" width="220" height="120" class="node publicnode"/><text x="180" y="182" class="label">Project 3</text><text x="180" y="208" class="small">application source + tests</text>
+  <rect x="70" y="145" width="220" height="120" class="node publicnode"/><text x="180" y="182" class="label">containerised-service-cicd</text><text x="180" y="208" class="small">application source + tests</text>
   <rect x="370" y="145" width="240" height="120" class="node publicnode"/><text x="490" y="182" class="label">GitHub Actions</text><text x="490" y="208" class="small">build, scan, publish</text>
   <rect x="690" y="145" width="230" height="120" class="node publicnode"/><text x="805" y="182" class="label">GHCR</text><text x="805" y="208" class="small">immutable OCI digest</text>
-  <rect x="1000" y="125" width="250" height="160" class="node publicnode"/><text x="1125" y="162" class="label">Project 5 pull request</text><text x="1125" y="190" class="small">render + schema</text><text x="1125" y="212" class="small">security + secret checks</text>
+  <rect x="1000" y="125" width="250" height="160" class="node publicnode"/><text x="1125" y="162" class="label">GitOps pull request</text><text x="1125" y="190" class="small">render + schema</text><text x="1125" y="212" class="small">security + secret checks</text>
   <rect x="1330" y="145" width="180" height="120" class="node publicnode"/><text x="1420" y="182" class="label">Git main</text><text x="1420" y="208" class="small">reviewed state</text>
-  <path d="M290 205 H370" class="edge"/><path d="M610 205 H690" class="edge"/><path d="M920 205 H1000" class="edge"/><path d="M1250 205 H1330" class="edge"/><text x="962" y="190" class="note">digest copied into manifest</text>
+  <path d="M290 205 H370" class="edge"/><path d="M610 205 H690" class="edge"/><path d="M920 205 H1000" class="edge"/><path d="M1250 205 H1330" class="edge"/><text x="925" y="115" class="note">digest copied into manifest</text>
 
   <rect x="30" y="470" width="1540" height="540" class="boundary local"/>
   <text x="60" y="512" class="title">LOCAL OPERATOR / DOCKER DESKTOP BOUNDARY</text>
@@ -24,7 +24,7 @@
   <rect x="370" y="600" width="230" height="120" class="node localnode"/><text x="485" y="637" class="label">Argo CD</text><text x="485" y="663" class="small">read-only Git observer</text>
   <path d="M300 660 H370" class="edge"/><path d="M1420 265 V560 H485 V600" class="edge"/>
   <path d="M600 660 H650 V630 H710" class="edge"/>
-  <text x="1290" y="552" class="note">Git main → Argo CD</text><text x="610" y="620" class="note">Argo CD reconciles overlay</text>
+  <text x="1290" y="552" class="note">Git main → Argo CD</text><text x="610" y="580" class="note">Argo CD reconciles overlay</text>
   <rect x="670" y="560" width="860" height="410" class="boundary cluster"/>
   <text x="700" y="598" class="label" text-anchor="start">Docker Desktop Kubernetes cluster</text>
   <rect x="710" y="630" width="190" height="90" class="node localnode"/><text x="805" y="662" class="label">Kustomize</text><text x="805" y="686" class="small">base + local overlay</text>
@@ -37,6 +37,6 @@
   <rect x="1190" y="790" width="190" height="100" class="node localnode"/><text x="1285" y="826" class="label">HPA</text><text x="1285" y="850" class="small">1–3 / CPU 70%</text>
   <rect x="1390" y="790" width="110" height="100" class="node localnode"/><text x="1445" y="826" class="label">Policy</text><text x="1445" y="850" class="small">deny + allow</text>
   <path d="M805 790 V750 H1285 V720" class="edge dashed"/><path d="M1045 790 V760 H1285 V720" class="edge dashed"/><path d="M1285 790 V750 H1045 V720" class="edge dashed"/><path d="M1445 790 V740 H1285 V720" class="edge dashed"/>
-  <text x="815" y="748" class="note">ConfigMap / Secret feed Pod</text><text x="1060" y="742" class="note">HPA scales Deployment</text><text x="1370" y="732" class="note">Policy constrains Pod</text>
+  <text x="815" y="748" class="note">ConfigMap / Secret feed Pod</text><text x="1060" y="742" class="note">HPA scales Deployment</text><text x="1370" y="770" class="note">Policy constrains Pod</text>
   <text x="70" y="970" class="note">Trust boundary: local kubeconfig, Secret value, Argo CD, and cluster state are not stored in Git.</text>
 </svg>

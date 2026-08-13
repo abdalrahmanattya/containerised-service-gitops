@@ -7,10 +7,10 @@ reconcile it from GitHub.
 
 ## Scope
 
-- Verify or enable Docker Desktop Kubernetes with learner participation
+- Verify or enable Docker Desktop Kubernetes with maintainer approval
 - Confirm exact kubectl context and namespace before mutation
 - Install a reviewed Argo CD version after explicit approval
-- Add an Argo CD Application restricted to the Project 5 repository and local
+- Add an Argo CD Application restricted to the GitOps repository and local
   overlay
 - Synchronize the reviewed desired state
 - Verify rollout, pods, events, logs, image, configuration, and three endpoints

@@ -1,10 +1,10 @@
 %% Public architecture source. Target: Docker Desktop Kubernetes only.
 flowchart LR
   subgraph PUBLIC["PUBLIC DELIVERY BOUNDARY"]
-    APP["Project 3 application\nsource + tests"]
+    APP["containerised-service-cicd\napplication source + tests"]
     ACTIONS["GitHub Actions\nbuild, scan, publish"]
     GHCR["GHCR\nversioned OCI image\nimmutable digest"]
-    PR["Project 5 pull request\nKustomize render + schema +\nsecurity + secret-pattern checks"]
+    PR["GitOps pull request\nKustomize render + schema +\nsecurity + secret-pattern checks"]
     MAIN["Git main\nreviewed desired state"]
     APP --> ACTIONS --> GHCR
     PR --> MAIN

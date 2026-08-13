@@ -2,10 +2,11 @@
 
 ## Purpose and boundaries
 
-Project 5 is the platform desired-state repository for the Project 3 service.
+This repository is the platform desired-state repository for the
+`containerised-service-cicd` application.
 The repositories have separate responsibilities:
 
-| Boundary | Project 3 application repository | Project 5 GitOps repository |
+| Boundary | `containerised-service-cicd` application repository | `containerised-service-gitops` desired-state repository |
 | --- | --- | --- |
 | Owns | Python source, tests, Dockerfile, image release | Kubernetes desired state, validation, operations |
 | Produces | Versioned GHCR image | Rendered Kubernetes objects |

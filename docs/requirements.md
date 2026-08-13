@@ -1,16 +1,16 @@
-# Project 5 requirements
+# GitOps repository requirements
 
 ## Outcome
 
-Run the released Project 3 service on a local Kubernetes cluster from
+Run the released application service on a local Kubernetes cluster from
 Git-versioned desired state. A reviewer must be able to understand the rendered
 workload, verify it before synchronization, diagnose a failed rollout from
 evidence, and return to a known-good Git revision.
 
 ## Repository and artifact contract
 
-- Project 3 owns service source, tests, Dockerfile, semantic version, and image
-  publication.
+- `containerised-service-cicd` owns service source, tests, Dockerfile, semantic
+  version, and image publication.
 - This repository owns Kubernetes configuration and GitOps operations.
 - The deployment references a versioned public GHCR image. Production-like
   overlays should prefer an immutable digest after publication is verified.
@@ -70,7 +70,7 @@ evidence, and return to a known-good Git revision.
 
 - All overlays render deterministically and validate locally and in GitHub CI.
 - The local deployment reaches Available and all three service endpoints return
-  the documented Project 3 responses.
+  the documented application responses.
 - Health, resources, configuration, identity, network access, and scaling are
   reviewed with evidence.
 - One deliberate failure is diagnosed from Kubernetes evidence before repair.

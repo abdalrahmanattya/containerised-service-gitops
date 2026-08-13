@@ -1,4 +1,4 @@
-# Issue 001: Establish the Project 5 scaffold and architecture
+# Issue 001: Establish the GitOps repository scaffold and architecture
 
 ## Outcome
 
@@ -19,7 +19,8 @@ or deployment is included.
 ## Acceptance criteria
 
 - A fresh session can reconstruct purpose, rules, status, and exact next step.
-- Project 3 and Project 5 ownership boundaries are explicit.
+- The `containerised-service-cicd` and `containerised-service-gitops` ownership
+  boundaries are explicit.
 - Completion gate, safety boundaries, and rollback direction are documented.
 - `git diff --check` passes.
 - The complete diff is reviewed before commit.
