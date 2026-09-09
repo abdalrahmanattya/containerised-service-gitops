@@ -1,3 +1,5 @@
+<!-- reader-first-readme:v1 -->
+
 # Containerised Service Kubernetes and GitOps
 
 This repository is the Kubernetes desired-state and GitOps operations half of
@@ -6,7 +8,7 @@ separate application repository to a Docker Desktop Kubernetes cluster. A
 reviewed Git change is rendered by Kustomize and reconciled by Argo CD; this
 repository does not build the application image.
 
-## What this project does
+## What it does
 
 The project deploys the HTTP service to Docker Desktop's local Kubernetes
 cluster. It defines:
@@ -25,6 +27,32 @@ The deployed service exposes `GET /health`, `GET /version`, and
 `GET /config-summary`. Its source and container build remain in the separate
 [`containerised-service-cicd`](https://github.com/abdalrahmanattya/containerised-service-cicd)
 application repository.
+
+## At a glance
+
+This repository is for the person responsible for changing where and how the
+service runs. Instead of changing a live cluster by hand, the operator proposes
+a small Git change. Automated checks inspect the resulting Kubernetes
+configuration, a reviewer approves it, and Argo CD makes the local cluster match
+that reviewed record.
+
+| Stage | What it gives the operator |
+| --- | --- |
+| Describe | Reusable Kubernetes settings plus clear local and staging differences |
+| Review | A pull request showing the exact desired-state change before deployment |
+| Validate | Automated rendering, schema, security, and secret-safety checks |
+| Reconcile | Argo CD continuously compares reviewed Git state with the local cluster |
+| Recover | A normal Git revert restores the last known-good configuration |
+
+## Operator journey
+
+Imagine that a new service image is ready. The operator updates its immutable
+image digest in a feature branch and opens a pull request. CI renders both
+environment overlays and rejects malformed or unsafe configuration. After the
+change is reviewed and merged, Argo CD notices the new Git revision and updates
+the Docker Desktop Kubernetes cluster. The operator checks rollout status and
+the service endpoints. If the image cannot start, events identify the failure
+and a reviewed Git revert returns the cluster to the known-good revision.
 
 Together, the application and this repository form the **Secure Container
 Delivery & GitOps** case study. The application repository owns source, tests,
@@ -50,6 +78,67 @@ cluster.
 The image is generated from the companion [Mermaid source](docs/architecture.mmd)
 so the flow remains maintainable as the manifests evolve.
 
+In plain language, the main path starts with a versioned application image in
+GitHub Container Registry (GHCR). This repository records the exact image digest
+and the settings Kubernetes should use. CI checks that record but cannot deploy
+it. Argo CD reads the approved `main` branch, combines the reusable Kustomize
+base with the local overlay, and asks Kubernetes to converge on that state.
+
+### Local runtime diagram
+
+```mermaid
+flowchart LR
+  Operator[Operator on the host] -->|confirms context and creates Secret| Argo[Argo CD]
+  Git[Reviewed Git main] -->|observed continuously| Argo
+  Argo -->|applies rendered local overlay| Kubernetes[Docker Desktop Kubernetes]
+  Kubernetes --> Deployment[Deployment manages the service Pod]
+  Deployment --> Service[ClusterIP Service]
+  Service -->|temporary port-forward| Browser[Operator curl or browser]
+  Config[ConfigMap and external Secret] --> Deployment
+  Metrics[Metrics Server] --> HPA[Horizontal Pod Autoscaler]
+  HPA --> Deployment
+```
+
+This runtime diagram shows the components that operate on the developer's
+machine. It is separate from the public delivery path above: Git and GHCR are
+hosted, while Argo CD, Kubernetes, the runtime Secret, and service traffic stay
+inside the local Docker Desktop environment.
+
+## Technology in plain English
+
+| Technology | Its job here |
+| --- | --- |
+| Kubernetes | Runs the container, checks its health, exposes it inside the cluster, and replaces unhealthy instances. |
+| Kustomize | Combines a shared set of Kubernetes objects with the small differences for local or staging use. |
+| Argo CD | Watches reviewed Git state and reconciles—meaning it brings—the cluster back to that state when they differ. |
+| GHCR | GitHub Container Registry stores the versioned application image by an immutable digest. |
+| Docker Desktop | Supplies the supported local Kubernetes cluster; no cloud account is needed. |
+| Horizontal Pod Autoscaler (HPA) | Adjusts the number of service Pods within the configured one-to-three range using CPU measurements. |
+
+### Cloud-resources diagram
+
+There is no cloud compute, managed Kubernetes cluster, database, load balancer,
+DNS zone, or paid infrastructure in this design. The relevant deployment view
+is therefore the local runtime diagram above. GitHub hosts the public Git
+repository and GHCR image; both are shown in the system architecture diagram.
+No cloud resources are planned or deployed; the local components described
+above were deployed and validated on Docker Desktop.
+
+The diagrams use labelled neutral shapes rather than cloud-provider icons
+because there is no cloud provider in scope. Product names refer to their
+official projects: [Kubernetes](https://kubernetes.io/),
+[Argo CD](https://argo-cd.readthedocs.io/),
+[Docker](https://www.docker.com/), and
+[GitHub](https://github.com/logos).
+Official provider icon provenance is therefore not applicable to this
+cloud-free runtime.
+
+## Why this is useful
+
+The reviewed Git record makes a deployment change understandable before it
+reaches a cluster. The same record also gives operators a clear source for
+diagnosis and recovery instead of leaving undocumented manual changes behind.
+
 ## Safety boundaries
 
 - The supported target is a local Docker Desktop Kubernetes cluster only.
@@ -61,7 +150,7 @@ so the flow remains maintainable as the manifests evolve.
 - GitHub publication and image publication use reviewed workflows and scoped
   repository permissions.
 
-## Non-goals
+## Limitations and non-goals
 
 - Managed or production Kubernetes, cloud-provider resources, or paid services.
 - Public ingress, DNS, TLS certificates, or internet exposure.
@@ -80,7 +169,19 @@ A change owner:
 5. observes Argo CD synchronize the local cluster; and
 6. verifies health, version, configuration, events, and rollout status.
 
-## Validate without changing a cluster
+## Testing and validation evidence
+
+The recorded completion run validated both overlays, secret-pattern checks,
+health/version/configuration endpoints, automatic scaling metrics, a deliberately
+broken image rollout, diagnosis from Kubernetes events, and recovery through a
+Git revert. The release evidence is summarized in [Release status](#release-status).
+
+## Operator guide
+
+The exact deployment method is the Docker Desktop, Argo CD, Kustomize, and
+`kubectl` sequence below.
+
+### Validate without changing a cluster
 
 From the repository root, run the lightweight repository checks:
 
@@ -100,7 +201,7 @@ installed, run the same complete validation shape used by CI:
 Expected result: both overlays render and the schema, security, configuration,
 and public-secret checks pass.
 
-## Set up the local deployment
+### Set up the local deployment
 
 The tested target is Docker Desktop Kubernetes. Every command in this section
 changes that local cluster and should be run only after confirming the target:
@@ -145,7 +246,7 @@ kubectl -n containerised-service get hpa containerised-service
 Expected result: the Application is `Synced` and `Healthy`, the Deployment is
 Available, the pod is Ready, and the HPA has a CPU metric.
 
-## Verify the service
+### Verify the service
 
 Open a temporary local port-forward:
 
@@ -164,7 +265,7 @@ curl --fail http://127.0.0.1:8001/config-summary
 Expected responses report healthy status, application version `0.1.3`, and the
 local development configuration. Stop the port-forward with `Ctrl-C`.
 
-## Diagnose a failed rollout
+### Diagnose a failed rollout
 
 Gather evidence before editing desired state:
 
@@ -183,7 +284,7 @@ Events. Logs may legitimately be unavailable when a container never starts.
 Rank likely causes from this evidence, then make the smallest repair through a
 reviewed pull request.
 
-## Roll back through Git
+### Roll back through Git
 
 Use a revert commit so history remains visible and Argo CD receives a reviewed
 desired-state change:
@@ -201,7 +302,7 @@ merge commit must be reverted, use `git revert -m 1 <merge-commit>`. Do not use
 `kubectl rollout undo` as the normal repair because Argo CD would treat that as
 drift and restore Git's still-faulty state.
 
-## Clean up the local cluster
+### Clean up the local cluster
 
 First confirm context `docker-desktop`. These commands remove the Application,
 workload namespace including its external Secret, metrics-server, and Argo CD:
@@ -217,7 +318,7 @@ Run the metrics-server deletion only if the checksum-verified manifest still
 exists at that path. Namespace deletion removes local data and is intentionally
 separate from normal GitOps operation; review the targets before running it.
 
-## Environment overlays
+### Environment overlays
 
 To inspect an environment without changing a cluster, render its Kustomize
 overlay from the repository root:
